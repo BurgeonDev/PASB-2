@@ -81,7 +81,8 @@ class _HomeScreenState extends State<MenuScreen> {
                 setState(() => currentIndex = index);
               },
               children: [
-                Dashboard(),
+                Dashboard(onNavigate: _navigateToPage),
+
                 Accounts(),
                 AttendanceScreen(),
                 ReportScreen(),
@@ -289,8 +290,8 @@ class _HomeScreenState extends State<MenuScreen> {
         PopupMenuItem<int>(value: 24, child: Text("List ben data")),
         PopupMenuItem<int>(value: 25, child: Text("Add family data")),
         PopupMenuItem<int>(value: 26, child: Text("List family data")),
-        PopupMenuItem<int>(value: 27, child: Text("Add HW data")),
-        PopupMenuItem<int>(value: 28, child: Text("List HW data")),
+        PopupMenuItem<int>(value: 27, child: Text("Add HWO data")),
+        PopupMenuItem<int>(value: 28, child: Text("List HWO data")),
         PopupMenuItem<int>(value: 29, child: Text("Add Pension data")),
         PopupMenuItem<int>(value: 30, child: Text("List Pension data")),
       ],

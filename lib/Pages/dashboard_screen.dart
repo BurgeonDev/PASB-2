@@ -1,298 +1,236 @@
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatelessWidget {
-  const Dashboard({super.key});
+  final void Function(int)? onNavigate;
+  const Dashboard({super.key, this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> dashboardItems = [
       {
         'icon': Icons.person,
-        'title': "Today's Open Cases",
-        'subtitle': "21",
-        'color': Colors.white,
-        'borderColor': Colors.green,
+        'title': "Data Entry Form",
+        'gradient': [Colors.blueAccent, Colors.lightBlueAccent],
       },
       {
         'icon': Icons.people,
-        'title': "Today's Rejected Cases",
-        'subtitle': "44",
-        'color': Colors.white,
-        'borderColor': Colors.red,
+        'title': "Data Summary",
+        'gradient': [Colors.pinkAccent, Colors.orangeAccent],
       },
       {
         'icon': Icons.report,
-        'title': "Today's In-progress Cases",
-        'subtitle': "6",
-        'color': Colors.white,
-        'borderColor': Colors.blue,
-      },
-      {
-        'icon': Icons.report,
-        'title': "Today's Pension Claims",
-        'subtitle': "11",
-        'color': Colors.white,
-        'borderColor': Colors.yellow,
-      },
-    ];
-
-    /// 🔹 Dynamic data for lower containers
-    final List<Map<String, dynamic>> dasbboardContainers = [
-      {
-        'title': 'Top 5 DASBs by Open Cases',
-        'borderColor': Colors.white,
-        'items': [
-          {'icon': Icons.home, 'title': 'Islamabad', 'subtitle': '8'},
-          {'icon': Icons.home, 'title': 'Karachi', 'subtitle': '6'},
-          {'icon': Icons.home, 'title': 'Peshawar', 'subtitle': '4'},
-          {'icon': Icons.home, 'title': 'Multan', 'subtitle': '3'},
-          {'icon': Icons.home, 'title': 'Hyderabad', 'subtitle': '1'},
-        ],
-      },
-      {
-        'title': 'Top 5 DASBs by Finalized Cases',
-        'borderColor': Colors.white,
-        'items': [
-          {'icon': Icons.home, 'title': 'Rawalpindi', 'subtitle': '5'},
-          {'icon': Icons.home, 'title': 'Lahore', 'subtitle': '4'},
-          {'icon': Icons.home, 'title': 'Peshawar', 'subtitle': '3'},
-          {'icon': Icons.home, 'title': 'Islamabad', 'subtitle': '2'},
-          {'icon': Icons.home, 'title': 'Karachi', 'subtitle': '1'},
-        ],
-      },
-      {
-        'title': 'Top 5 DASBs by Rejected Cases',
-        'borderColor': Colors.white,
-        'items': [
-          {'icon': Icons.home, 'title': 'Multan', 'subtitle': '8'},
-          {'icon': Icons.home, 'title': 'Hyderabad', 'subtitle': '6'},
-          {'icon': Icons.home, 'title': 'Peshawar', 'subtitle': '5'},
-          {'icon': Icons.home, 'title': 'Rawalpindi', 'subtitle': '5'},
-          {'icon': Icons.home, 'title': 'Lahore', 'subtitle': '4'},
-        ],
+        'title': "Data Reports",
+        'gradient': [Colors.greenAccent, Colors.teal],
       },
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF6F8FB),
       appBar: AppBar(
-        title: const Text("Dashboard"),
-        backgroundColor: const Color(0xff27ADF5),
+        title: const Text(
+          "Dashboard",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+        elevation: 4,
+        backgroundColor: const Color(0xff1A73E8),
+        // centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-              // ===== Top Horizontal Dashboard Cards =====
-              SizedBox(
-                height: 120,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: dashboardItems.length,
-                  itemBuilder: (context, index) {
-                    final item = dashboardItems[index];
-                    return Container(
-                      width: 300,
-                      margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: item['color'],
-                        border: Border(
-                          bottom: BorderSide(
-                            color: item['borderColor'],
-                            width: 5,
-                          ),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            blurRadius: 6,
-                            offset: const Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(item['icon'], size: 40, color: Colors.blue),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 10),
-                                Text(
-                                  item['title'],
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Center(
-                                  child: Text(
-                                    item['subtitle'],
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+              // 🔹 Top Dashboard Summary Cards
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 20,
+                runSpacing: 20,
+                children: dashboardItems.map((item) {
+                  return _buildDashboardCard(item);
+                }).toList(),
               ),
 
+              const SizedBox(height: 20),
+
+              // 🔹 Bottom Section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDashboardColumn([
+                    'Data Entry Form',
+                    'Family / NOK Form',
+                    'Pension Cases progress Form',
+                    'Benvolent Fund Data Entry Form',
+                    'Hon Welfare Officers Data Entry Form',
+                    'Pension Merger Form',
+                  ]),
+                  const SizedBox(width: 20),
+                  _buildDashboardColumn([
+                    'Pensioners by Category',
+                    'Pensioners by Rank',
+                    'Pensioners by Regt/Corps',
+                    'Pensioners by Army-NAVY-PA',
+                    'Shuhada and Disabled',
+                    'Benevolent Fund by Regt',
+                    'Hon Wel Offrs Held Strength',
+                    'Pension Cases by Regt/Corps',
+                    'Pension Cases Overdue',
+                    'Pension Cases Status',
+                    'Pension Cases by Date',
+                  ]),
+                  const SizedBox(width: 20),
+                  _buildDashboardColumn([
+                    'List of Shuhada',
+                    'List of Disabled',
+                    'List of Ben Fund Beneficiaries',
+                    'List of Ben Fund Verification',
+                    'List of Hon Welfare Officers',
+                    'List of Extn Cases Hon Wel Offrs',
+                    'List of Outstanding Pension Cases',
+                    'Summary of Verified Record',
+                  ]),
+                ],
+              ),
               const SizedBox(height: 100),
-
-              // ===== Bottom 3 Horizontal Containers =====
-              SizedBox(
-                height: 400,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: dasbboardContainers.length,
-                  itemBuilder: (context, index) {
-                    final section = dasbboardContainers[index];
-                    final items = section['items'] as List<dynamic>;
-                    return Container(
-                      height: 400,
-                      width: 400,
-                      margin: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          bottom: BorderSide(
-                            color: section['borderColor'],
-                            width: 5,
-                          ),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            blurRadius: 6,
-                            offset: const Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // 🔹 Dynamic Title
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_drop_down,
-                                  color: section['borderColor'],
-                                ),
-                                const SizedBox(width: 5),
-                                Text(
-                                  section['title'],
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-
-                          // 🔹 Dynamic List of Items
-                          Expanded(
-                            child: ListView.separated(
-                              itemCount: items.length,
-                              separatorBuilder: (context, _) => const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 4),
-                                child: Center(
-                                  child: SizedBox(
-                                    width:
-                                        350, // ⬅️ adjust this value to control line length
-                                    child: Divider(
-                                      color: Colors.grey,
-                                      thickness: 1,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              itemBuilder: (context, i) {
-                                final item = items[i];
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(item['icon'],
-                                              color: Colors.grey),
-                                          const SizedBox(width: 5),
-                                          Text(
-                                            item['title'],
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        item['subtitle'],
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'view All',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.blueAccent),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.arrow_forward,
-                                color: Colors.blueAccent,
-                                size: 15,
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 🔹 Card Widget (Top)
+  Widget _buildDashboardCard(Map<String, dynamic> item) {
+    return Container(
+      width: 260,
+      height: 50,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: List<Color>.from(item['gradient']),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: const Offset(2, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const SizedBox(width: 16),
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: Colors.white.withOpacity(0.2),
+            child: Icon(item['icon'], size: 30, color: Colors.white),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              item['title'],
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 🔹 Dashboard Column Builder
+  Widget _buildDashboardColumn(List<String> titles) {
+    return Container(
+      width: 260,
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 8,
+            offset: const Offset(2, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: titles
+            .map(
+              (title) => DashboardButton(
+                title: title,
+                onTap: () {
+                  // Replace this with your actual navigation logic
+                  if (onNavigate != null) onNavigate!(4);
+                },
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class DashboardButton extends StatefulWidget {
+  final String title;
+  final VoidCallback? onTap;
+  const DashboardButton({super.key, required this.title, this.onTap});
+
+  @override
+  State<DashboardButton> createState() => _DashboardButtonState();
+}
+
+class _DashboardButtonState extends State<DashboardButton> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: _hover ? const Color(0xffE3F2FD) : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _hover ? const Color(0xff1A73E8) : Colors.grey.shade300,
+              width: 1.3,
+            ),
+            boxShadow: _hover
+                ? [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                : [],
+          ),
+          child: Center(
+            child: Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14.5,
+                fontWeight: FontWeight.w600,
+                color: _hover ? const Color(0xff1A73E8) : Colors.grey.shade800,
+              ),
+            ),
           ),
         ),
       ),

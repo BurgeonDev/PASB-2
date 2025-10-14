@@ -184,7 +184,7 @@ class _ListOfHWDataScreenState extends State<ListOfHWDataScreen> {
     return Scaffold(
       backgroundColor: const Color(0xfff8f9fd),
       appBar: AppBar(
-        title: const Text("HW Data List"),
+        title: const Text("HWO Data List"),
         backgroundColor: const Color(0xff27ADF5),
         actions: [
           Row(
