@@ -36,8 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
       final input = emailController.text.trim();
       final password = passwordController.text.trim();
 
-      // ✅ Super Admin check
-      if (input == "admin" && password == "Pasb@1234") {
+      // ✅ Super Admin check (case-insensitive username)
+      if (input.toLowerCase() == "admin" && password == "Pasb@1234") {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => MenuScreen(isSuperAdmin: true)),
@@ -61,7 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
         matchedUser = users.firstWhere(
           (user) =>
-              ((user.email == input) || (user.phone == input)) &&
+              ((user.email?.toLowerCase() == input.toLowerCase()) ||
+                  (user.phone == input)) &&
               PasswordUtils.verifyPassword(password, user.password),
         );
 

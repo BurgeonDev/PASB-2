@@ -347,7 +347,7 @@ class _LuRankScreenState extends State<LuRankScreen> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+                scrollDirection: Axis.vertical,
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width, // full screen width
                   child: DataTable(
