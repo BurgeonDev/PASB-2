@@ -249,7 +249,7 @@ class _ListOfHWDataScreenState extends State<ListOfHWDataScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "HW Data Records",
+                    "HWO Data Records",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(

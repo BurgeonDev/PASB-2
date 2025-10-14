@@ -24,6 +24,7 @@ import 'package:testing_window_app/Pages/pensioners_section.dart/list_of_hwData_
 import 'package:testing_window_app/Pages/pensioners_section.dart/list_of_pensioners_screen.dart';
 import 'package:testing_window_app/Pages/pensioners_section.dart/list_of_pensiontbl_screen.dart';
 import 'package:testing_window_app/Pages/pensioners_section.dart/pensioners_data_screen.dart';
+import 'package:testing_window_app/Pages/pensioners_section.dart/pensions_merger_screen.dart';
 import 'package:testing_window_app/Pages/pensioners_section.dart/pensiontbl_data_screen.dart';
 import 'package:testing_window_app/Pages/reports.dart';
 import 'package:testing_window_app/Pages/reports_section/list_of_disabled.dart';
@@ -61,7 +62,7 @@ class _HomeScreenState extends State<MenuScreen> {
   }
 
   void _navigateToPage(int index) {
-    if (index < 0 || index > 30) return; // 🛡️ guard
+    if (index < 0 || index > 31) return; // 🛡️ guard
 
     pageController.jumpToPage(index);
     setState(() => currentIndex = index);
@@ -113,6 +114,7 @@ class _HomeScreenState extends State<MenuScreen> {
                 ListOfHWDataScreen(),
                 PensiontblDataScreen(),
                 ListOfPensionDataScreen(),
+                PensionMergerFormScreen(),
               ],
             ),
           ),
@@ -294,6 +296,7 @@ class _HomeScreenState extends State<MenuScreen> {
         PopupMenuItem<int>(value: 28, child: Text("List HWO data")),
         PopupMenuItem<int>(value: 29, child: Text("Add Pension data")),
         PopupMenuItem<int>(value: 30, child: Text("List Pension data")),
+        PopupMenuItem<int>(value: 31, child: Text("Pension Merger Form")),
       ],
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),

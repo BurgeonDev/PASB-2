@@ -158,7 +158,7 @@ class _HWDataScreenState extends State<HWDataScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xff27ADF5),
-        title: Text(widget.hwData == null ? "Add HW Data" : "Edit HW Data"),
+        title: Text(widget.hwData == null ? "Add HWO Data" : "Edit HWO Data"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

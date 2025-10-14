@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:testing_window_app/Pages/pensioners_section.dart/pensioners_data_screen.dart';
+import 'package:testing_window_app/Pages/pensioners_section.dart/pensiontbl_data_screen.dart';
 
 class Dashboard extends StatelessWidget {
   final void Function(int)? onNavigate;
@@ -59,7 +61,7 @@ class Dashboard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDashboardColumn([
+                  _buildDashboardColumn(context, [
                     'Data Entry Form',
                     'Family / NOK Form',
                     'Pension Cases progress Form',
@@ -68,7 +70,7 @@ class Dashboard extends StatelessWidget {
                     'Pension Merger Form',
                   ]),
                   const SizedBox(width: 20),
-                  _buildDashboardColumn([
+                  _buildDashboardColumn(context, [
                     'Pensioners by Category',
                     'Pensioners by Rank',
                     'Pensioners by Regt/Corps',
@@ -82,7 +84,7 @@ class Dashboard extends StatelessWidget {
                     'Pension Cases by Date',
                   ]),
                   const SizedBox(width: 20),
-                  _buildDashboardColumn([
+                  _buildDashboardColumn(context, [
                     'List of Shuhada',
                     'List of Disabled',
                     'List of Ben Fund Beneficiaries',
@@ -147,7 +149,8 @@ class Dashboard extends StatelessWidget {
   }
 
   // 🔹 Dashboard Column Builder
-  Widget _buildDashboardColumn(List<String> titles) {
+  // 🔹 Dashboard Column Builder (with navigation)
+  Widget _buildDashboardColumn(BuildContext context, List<String> titles) {
     return Container(
       width: 260,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
@@ -164,17 +167,63 @@ class Dashboard extends StatelessWidget {
         ],
       ),
       child: Column(
-        children: titles
-            .map(
-              (title) => DashboardButton(
-                title: title,
-                onTap: () {
-                  // Replace this with your actual navigation logic
-                  if (onNavigate != null) onNavigate!(4);
-                },
-              ),
-            )
-            .toList(),
+        children: titles.map((title) {
+          return DashboardButton(
+            title: title,
+            onTap: () {
+              // 🔹 Navigation logic for each button
+              switch (title) {
+                case 'Data Entry Form':
+                  onNavigate?.call(4);
+
+                  break;
+
+                case 'List of Shuhada':
+                  onNavigate?.call(6);
+                  break;
+
+                // case 'Pension Cases progress Form':
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (_) => const PensionProgressScreen(),
+                //     ),
+                //   );
+                //   break;
+
+                // case 'Benvolent Fund Data Entry Form':
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (_) => const BenvolentFundScreen(),
+                //     ),
+                //   );
+                //   break;
+
+                // case 'Hon Welfare Officers Data Entry Form':
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (_) => const HonWelfareScreen()),
+                //   );
+                //   break;
+
+                // case 'Pension Merger Form':
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (_) => const PensionMergerScreen(),
+                //     ),
+                //   );
+                //   break;
+
+                default:
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Coming soon: $title')),
+                  );
+              }
+            },
+          );
+        }).toList(),
       ),
     );
   }
