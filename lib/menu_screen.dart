@@ -128,7 +128,7 @@ class _HomeScreenState extends State<MenuScreen> {
   Widget _buildTopNavBar() {
     return Container(
       height: 70,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
         color: Colors.black,
         boxShadow: [
@@ -159,6 +159,7 @@ class _HomeScreenState extends State<MenuScreen> {
           // _commonDataMenuCombo(),
           _navButton(index: 5, icon: Icons.settings, title: "Settings"),
           const Spacer(),
+
           _logoutButton(),
         ],
       ),
@@ -172,7 +173,7 @@ class _HomeScreenState extends State<MenuScreen> {
   }) {
     final bool isSelected = currentIndex == index;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 2),
       child: InkWell(
         onTap: () => _navigateToPage(index),
         borderRadius: BorderRadius.circular(8),
@@ -206,7 +207,7 @@ class _HomeScreenState extends State<MenuScreen> {
         PopupMenuItem<int>(value: 10, child: Text("List of Users")),
       ],
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
@@ -259,7 +260,7 @@ class _HomeScreenState extends State<MenuScreen> {
         PopupMenuItem<int>(value: 3, child: Text("Summary Data")),
       ],
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
@@ -299,7 +300,7 @@ class _HomeScreenState extends State<MenuScreen> {
         PopupMenuItem<int>(value: 31, child: Text("Pension Merger Form")),
       ],
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
@@ -364,7 +365,7 @@ class _HomeScreenState extends State<MenuScreen> {
         PopupMenuItem<int>(value: 12, child: Text("View All Pension Claims")),
       ],
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
@@ -403,7 +404,7 @@ class _HomeScreenState extends State<MenuScreen> {
         // PopupMenuItem<int>(value: 18, child: Text("District")),
       ],
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 2),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
