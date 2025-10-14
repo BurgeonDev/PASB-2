@@ -323,8 +323,8 @@ class _HomeScreenState extends State<MenuScreen> {
       onSelected: (int value) => _navigateToPage(value),
       itemBuilder: (context) => const [
         PopupMenuItem<int>(value: 14, child: Text("Rank")),
-        PopupMenuItem<int>(value: 15, child: Text("Pension")),
-        PopupMenuItem<int>(value: 16, child: Text("RegtCorps")),
+        PopupMenuItem<int>(value: 15, child: Text("Pension Type")),
+        PopupMenuItem<int>(value: 16, child: Text("Regt/Corps")),
         // PopupMenuItem<int>(value: 13, child: Text("Designations")),
         // PopupMenuItem<int>(value: 13, child: Text("Grades")),
       ],

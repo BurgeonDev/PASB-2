@@ -135,8 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           clipBehavior: Clip.antiAlias,
                           child: Image.asset(
-                            "assets/login_image.jpeg",
-                            fit: BoxFit.cover,
+                            "assets/c0f02f03-59c1-4669-8973-cb0fdc3b17cb.jpg",
+                            fit: BoxFit.fill,
                             width: double.infinity,
                             height: double.infinity,
                           ),

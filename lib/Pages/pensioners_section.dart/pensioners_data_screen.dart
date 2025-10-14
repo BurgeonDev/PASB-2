@@ -1062,24 +1062,24 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                           title: 'Bank & Pension Details',
                           maxHeight: maxHeight,
                           children: [
-                            Textfieldcomponent(
-                              hinttext: "GPO",
-                              controller: gpoController,
-                              validator: (v) => null,
-                            ),
-                            const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "PDO",
-                              controller: pdoController,
-                              validator: (v) => null,
-                            ),
-                            const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "PSB No",
-                              controller: psbNoController,
-                              validator: (v) => null,
-                            ),
-                            const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "GPO",
+                            //   controller: gpoController,
+                            //   validator: (v) => null,
+                            // ),
+                            // const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "PDO",
+                            //   controller: pdoController,
+                            //   validator: (v) => null,
+                            // ),
+                            // const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "PSB No",
+                            //   controller: psbNoController,
+                            //   validator: (v) => null,
+                            // ),
+                            //  const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "PPO No",
                               controller: ppoNoController,
@@ -1097,12 +1097,12 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               controller: bankBranchController,
                               validator: (v) => null,
                             ),
-                            const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "Bank Account No",
-                              controller: bankAcctNoController,
-                              validator: (v) => null,
-                            ),
+                            // const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "Bank Account No",
+                            //   controller: bankAcctNoController,
+                            //   validator: (v) => null,
+                            // ),
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "IBAN No",
@@ -1135,30 +1135,30 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               controller: nokDoBirthController,
                               validator: (v) => null,
                             ),
-                            const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "ID Marks",
-                              controller: nokIdMksController,
-                              validator: (v) => null,
-                            ),
-                            const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "GPO",
-                              controller: nokGpoController,
-                              validator: (v) => null,
-                            ),
-                            const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "PDO",
-                              controller: nokPdoController,
-                              validator: (v) => null,
-                            ),
-                            const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "PSB No",
-                              controller: nokPsbNoController,
-                              validator: (v) => null,
-                            ),
+                            //  const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "ID Marks",
+                            //   controller: nokIdMksController,
+                            //   validator: (v) => null,
+                            // ),
+                            // const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "GPO",
+                            //   controller: nokGpoController,
+                            //   validator: (v) => null,
+                            // ),
+                            // const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "PDO",
+                            //   controller: nokPdoController,
+                            //   validator: (v) => null,
+                            // ),
+                            // const SizedBox(height: 8),
+                            // Textfieldcomponent(
+                            //   hinttext: "PSB No",
+                            //   controller: nokPsbNoController,
+                            //   validator: (v) => null,
+                            // ),
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "PPO No",
@@ -1178,11 +1178,11 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               validator: (v) => null,
                             ),
                             const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "Bank Account No",
-                              controller: nokBankAcctNoController,
-                              validator: (v) => null,
-                            ),
+                            // Textfieldcomponent(
+                            //   hinttext: "Bank Account No",
+                            //   controller: nokBankAcctNoController,
+                            //   validator: (v) => null,
+                            // ),
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "IBAN No",
@@ -1266,42 +1266,42 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(width: 12),
-                      SectionColumn(
-                        title: 'Additional Personal / Misc Details',
-                        maxHeight: maxHeight,
-                        children: [
-                          Textfieldcomponent(
-                            hinttext: "CMP CNIC No",
-                            controller: cmpCnicController,
-                            validator: (v) => null,
-                          ),
-                          const SizedBox(height: 8),
-                          Textfieldcomponent(
-                            hinttext: "Identification Marks",
-                            controller: idMarksController,
-                            validator: (v) => null,
-                          ),
-                          const SizedBox(height: 8),
-                          Textfieldcomponent(
-                            hinttext: "Railway Station",
-                            controller: railwayStationController,
-                            validator: (v) => null,
-                          ),
-                          const SizedBox(height: 8),
-                          Textfieldcomponent(
-                            hinttext: "Police Station",
-                            controller: policeStationController,
-                            validator: (v) => null,
-                          ),
-                          const SizedBox(height: 8),
-                          Textfieldcomponent(
-                            hinttext: "Military Qualification",
-                            controller: milQualController,
-                            validator: (v) => null,
-                          ),
-                        ],
-                      ),
+                      // SizedBox(width: 12),
+                      // SectionColumn(
+                      //   title: 'Additional Personal / Misc Details',
+                      //   maxHeight: maxHeight,
+                      //   children: [
+                      //     Textfieldcomponent(
+                      //       hinttext: "CMP CNIC No",
+                      //       controller: cmpCnicController,
+                      //       validator: (v) => null,
+                      //     ),
+                      //     const SizedBox(height: 8),
+                      //     Textfieldcomponent(
+                      //       hinttext: "Identification Marks",
+                      //       controller: idMarksController,
+                      //       validator: (v) => null,
+                      //     ),
+                      //     const SizedBox(height: 8),
+                      //     Textfieldcomponent(
+                      //       hinttext: "Railway Station",
+                      //       controller: railwayStationController,
+                      //       validator: (v) => null,
+                      //     ),
+                      //     const SizedBox(height: 8),
+                      //     Textfieldcomponent(
+                      //       hinttext: "Police Station",
+                      //       controller: policeStationController,
+                      //       validator: (v) => null,
+                      //     ),
+                      //     const SizedBox(height: 8),
+                      //     Textfieldcomponent(
+                      //       hinttext: "Military Qualification",
+                      //       controller: milQualController,
+                      //       validator: (v) => null,
+                      //     ),
+                      //   ],
+                      // ),
                       // Optionally, you can place Save/Submit button here or at bottom
                     ],
                   ),

@@ -319,7 +319,9 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.nokData == null ? "Add NOK Data" : "Edit NOK Data"),
+        title: Text(
+          widget.nokData == null ? "Add Family Data" : "Edit Family Data",
+        ),
         backgroundColor: const Color(0xff27ADF5),
       ),
       body: SingleChildScrollView(

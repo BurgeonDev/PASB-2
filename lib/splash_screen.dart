@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.white,
       body: SizedBox.expand(
         child: Image.asset(
-          'assets/WhatsApp Image 2025-10-08 at 9.54.46 AM.jpeg',
+          'assets/WhatsApp Image 2025-10-14 at 8.38.47 AM.jpeg',
           fit: BoxFit.fill,
         ),
       ),

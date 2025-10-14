@@ -23,7 +23,13 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
   List<Map<String, dynamic>> _pensionList = [];
   int? _editingId;
 
-  final List<String> _categories = ['Civil', 'Military', 'Judicial', 'Other'];
+  final List<String> _categories = [
+    'Retired',
+    'Shaheed',
+    'Family Pensioner',
+    'Non-Pensioner',
+    'Disabled',
+  ];
   final String _pasbName = "PASB";
 
   @override
@@ -214,7 +220,7 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
     return Scaffold(
       backgroundColor: const Color(0xfff8f9fd),
       appBar: AppBar(
-        title: const Text("List of Lu Pensions"),
+        title: const Text("Pension Types Listing"),
         backgroundColor: const Color(0xff27ADF5),
       ),
       body: Padding(

@@ -238,7 +238,7 @@ class _LuRegtCorpsScreenState extends State<LuRegtCorpsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xfff8f9fd),
       appBar: AppBar(
-        title: const Text("List of LU Regt Corps"),
+        title: const Text("Regt Corps Listing"),
         backgroundColor: const Color(0xff27ADF5),
       ),
       body: Padding(
@@ -397,7 +397,9 @@ class _LuRegtCorpsScreenState extends State<LuRegtCorpsScreen> {
         child: Column(
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 🟩 Column 1
                 Expanded(
                   child: Column(
                     children: [
@@ -418,21 +420,31 @@ class _LuRegtCorpsScreenState extends State<LuRegtCorpsScreen> {
                             setState(() => _selectedForce = val),
                       ),
                       const SizedBox(height: 10),
-                      _textField(_regtCorpsIdController, 'RegtCorps ID'),
-                      const SizedBox(height: 10),
-                      _textField(_rwPhoneController, 'RW Phone'),
+                      _textField(_regtCorpsIdController, 'Regt/Corps Name'),
                     ],
                   ),
                 ),
                 const SizedBox(width: 16),
+
+                // 🟨 Column 2
                 Expanded(
                   child: Column(
                     children: [
-                      _textField(_rwAddressController, 'RW Address'),
+                      _textField(_rwPhoneController, 'RW Phone'),
                       const SizedBox(height: 10),
+                      _textField(_rwAddressController, 'RW Address'),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // 🟦 Column 3
+                Expanded(
+                  child: Column(
+                    children: [
                       _textField(_rwAddressUrduController, 'RW Address Urdu'),
                       const SizedBox(height: 10),
-                      _textField(_regtUrduController, 'Regt Urdu'),
+                      _textField(_regtUrduController, 'Regt/Corps Urdu'),
                     ],
                   ),
                 ),

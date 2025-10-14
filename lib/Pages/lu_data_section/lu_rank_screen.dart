@@ -247,7 +247,7 @@ class _LuRankScreenState extends State<LuRankScreen> {
     return Scaffold(
       backgroundColor: const Color(0xfff8f9fd),
       appBar: AppBar(
-        title: const Text("List of LU Rank"),
+        title: const Text("Rank Listing"),
         backgroundColor: const Color(0xff27ADF5),
       ),
       body: Padding(
@@ -302,6 +302,11 @@ class _LuRankScreenState extends State<LuRankScreen> {
                     title: 'Clear Filters',
                   ),
                 ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
                 SizedBox(
                   width: 200,
                   child: TextField(
@@ -318,7 +323,6 @@ class _LuRankScreenState extends State<LuRankScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
             Expanded(child: _buildRankDataTable(filteredRanks)),
           ],
@@ -354,25 +358,47 @@ class _LuRankScreenState extends State<LuRankScreen> {
                       DataColumn(label: Text("Rank")),
                       DataColumn(label: Text("Acronym")),
                       DataColumn(
-                        label: DropdownButton<String>(
-                          value: _tableFilterForce,
-                          hint: Text("Force"),
-                          items: [
-                            DropdownMenuItem(
-                              value: null,
-                              child: Text("All Forces"),
+                        label: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: SizedBox(
+                            width: 150, // adjust width as needed
+                            child: DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                hintText: "Force",
+
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    12,
+                                  ), // circular border
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                              ),
+                              value: _tableFilterForce,
+                              items: [
+                                DropdownMenuItem(
+                                  value: null,
+                                  child: Text("All Forces"),
+                                ),
+                                ..._forces.map(
+                                  (f) => DropdownMenuItem(
+                                    value: f,
+                                    child: Text(f),
+                                  ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _tableFilterForce = value;
+                                });
+                              },
                             ),
-                            ..._forces.map(
-                              (f) => DropdownMenuItem(value: f, child: Text(f)),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _tableFilterForce = value;
-                            });
-                          },
+                          ),
                         ),
                       ),
+
                       DataColumn(
                         label: DropdownButton<String>(
                           value: _tableFilterCategory,
@@ -409,20 +435,43 @@ class _LuRankScreenState extends State<LuRankScreen> {
                           DataCell(
                             Row(
                               children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.blue,
+                                Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.lightBlueAccent,
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
-                                  onPressed: () => _editRank(rank),
+                                  child: Center(
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.blue,
+                                      ),
+                                      onPressed: () => _editRank(rank),
+                                    ),
+                                  ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
+                                SizedBox(width: 5),
+                                Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade100,
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
-                                  onPressed: () =>
-                                      _deleteRank(rank['id'] as int),
+                                  child: Center(
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () =>
+                                          _deleteRank(rank['id'] as int),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -509,71 +558,89 @@ class _LuRankScreenState extends State<LuRankScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // --- Row 1: Rank, Acronym, Force ---
             Row(
               children: [
                 Expanded(child: _textField(_rankController, 'Rank')),
                 const SizedBox(width: 10),
                 Expanded(child: _textField(_acronymController, 'Acronym')),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Force',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
+                    ),
+                    value: _selectedForce == 'Forces' ? null : _selectedForce,
+                    items: _forces
+                        .map(
+                          (force) => DropdownMenuItem(
+                            value: force,
+                            child: Text(force),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedForce = value ?? 'Forces';
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
+
             const SizedBox(height: 10),
 
-            // --- Rounded Border Forces Dropdown ---
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-
-                //   border: Border.all(color: Colors.grey.shade400),
-              ),
-              child: DropdownButton<String>(
-                value: _selectedForce == 'Forces' ? null : _selectedForce,
-                hint: const Text('Forces'),
-                isExpanded: true,
-                underline: const SizedBox(),
-                items: _forces.map((force) {
-                  return DropdownMenuItem(value: force, child: Text(force));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedForce = value ?? 'Forces';
-                  });
-                },
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // --- Rounded Border Category Dropdown ---
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                //   border: Border.all(color: Colors.grey.shade400),
-              ),
-              child: DropdownButton<String>(
-                value: _selectedCategory == 'Category'
-                    ? null
-                    : _selectedCategory,
-                hint: const Text('Category'),
-                isExpanded: true,
-                underline: const SizedBox(),
-                items: _categories.map((cat) {
-                  return DropdownMenuItem(value: cat, child: Text(cat));
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCategory = value ?? 'Category';
-                  });
-                },
-              ),
+            // --- Row 2: Category, Rank Urdu, empty/placeholder ---
+            Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Category',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
+                    ),
+                    value: _selectedCategory == 'Category'
+                        ? null
+                        : _selectedCategory,
+                    items: _categories
+                        .map(
+                          (cat) =>
+                              DropdownMenuItem(value: cat, child: Text(cat)),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCategory = value ?? 'Category';
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: _textField(_rankUrduController, 'Rank Urdu')),
+                const SizedBox(width: 10),
+                Expanded(child: Container()), // placeholder for alignment
+              ],
             ),
 
-            const SizedBox(height: 10),
-            _textField(_rankUrduController, 'Rank Urdu'),
             const SizedBox(height: 20),
 
+            // --- Buttons ---
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
                   onPressed: _saveRank,
