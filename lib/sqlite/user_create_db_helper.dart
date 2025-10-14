@@ -28,7 +28,7 @@ class UserCreateDbHelper {
 
   Future _createDB(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE users(
+      CREATE TABLE basictbl(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date_entry TEXT,
         username TEXT NOT NULL,

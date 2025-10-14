@@ -244,85 +244,72 @@ class _DirectorateScreenState extends State<DirectorateScreen> {
       return const Center(child: Text('No directorates available.'));
     }
 
-    final int rowsPerPage = 10;
-    int _currentPage = 0;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scrollbar(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                child: DataTable(
+                  columnSpacing: 20,
+                  columns: const [
+                    DataColumn(label: Text("Actions")),
+                    DataColumn(label: Text("S No.")),
+                    DataColumn(label: Text("Province")),
+                    DataColumn(label: Text("Directorate Name")),
+                    DataColumn(label: Text("Created By")),
+                    DataColumn(label: Text("Created At")),
+                    DataColumn(label: Text("Updated By")),
+                    DataColumn(label: Text("Updated At")),
+                  ],
+                  rows: _directorateList.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final dir = entry.value;
+                    final seqNo = index + 1;
 
-    List<Map<String, dynamic>> _paginated() {
-      final start = _currentPage * rowsPerPage;
-      final end = start + rowsPerPage;
-      return _directorateList.sublist(
-        start,
-        end > _directorateList.length ? _directorateList.length : end,
-      );
-    }
-
-    return Column(
-      children: [
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                  child: DataTable(
-                    columnSpacing: 20,
-                    columns: const [
-                      DataColumn(label: Text("Actions")),
-                      DataColumn(label: Text("S No.")),
-                      DataColumn(label: Text("Province")),
-                      DataColumn(label: Text("Directorate Name")),
-                      DataColumn(label: Text("Created By")),
-                      DataColumn(label: Text("Created At")),
-                      DataColumn(label: Text("Updated By")),
-                      DataColumn(label: Text("Updated At")),
-                    ],
-                    rows: _paginated().asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final dir = entry.value;
-                      final seqNo = _currentPage * rowsPerPage + index + 1;
-
-                      return DataRow(
-                        cells: [
-                          DataCell(
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.blue,
-                                  ),
-                                  onPressed: () => _editDirectorate(dir),
+                    return DataRow(
+                      cells: [
+                        DataCell(
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.blue,
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () => _deleteDirectorateWithDialog(
-                                    dir['id'] as int,
-                                  ),
+                                onPressed: () => _editDirectorate(dir),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
                                 ),
-                              ],
-                            ),
+                                onPressed: () => _deleteDirectorateWithDialog(
+                                  dir['id'] as int,
+                                ),
+                              ),
+                            ],
                           ),
-                          DataCell(Text(seqNo.toString())),
-                          DataCell(Text(_getProvinceName(dir['province_id']))),
-                          DataCell(Text(dir['name'] ?? '')),
-                          DataCell(Text(dir['created_by'] ?? '')),
-                          DataCell(Text(_formatDate(dir['created_at']))),
-                          DataCell(Text(dir['updated_by'] ?? '')),
-                          DataCell(Text(_formatDate(dir['updated_at']))),
-                        ],
-                      );
-                    }).toList(),
-                  ),
+                        ),
+                        DataCell(Text(seqNo.toString())),
+                        DataCell(Text(_getProvinceName(dir['province_id']))),
+                        DataCell(Text(dir['name'] ?? '')),
+                        DataCell(Text(dir['created_by'] ?? '')),
+                        DataCell(Text(_formatDate(dir['created_at']))),
+                        DataCell(Text(dir['updated_by'] ?? '')),
+                        DataCell(Text(_formatDate(dir['updated_at']))),
+                      ],
+                    );
+                  }).toList(),
                 ),
-              );
-            },
+              ),
+            ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 

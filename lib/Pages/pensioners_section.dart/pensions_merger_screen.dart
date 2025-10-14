@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:testing_window_app/components/textfield_component.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
+import 'package:testing_window_app/utils/pdf_fill_helper.dart';
 
 class PensionMergerFormScreen extends StatefulWidget {
   final Map<String, dynamic>? pensionData;
@@ -188,15 +189,38 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
   Widget _buildTextField(
     String label,
     TextEditingController controller, {
+    bool required = false, // new flag
     VoidCallback? onSubmit,
   }) {
     return Textfieldcomponent(
       borderColor: Colors.grey,
       hinttext: label,
       controller: controller,
-      validator: (value) => value == null || value.isEmpty ? "Required" : null,
+      validator: (value) {
+        if (required && (value == null || value.isEmpty)) {
+          return "$label is required";
+        }
+        return null;
+      },
       onSubmitted: (_) => onSubmit?.call(),
     );
+  }
+
+  Map<String, String> _getPdfData() {
+    return {
+      'name': _nameController.text,
+      'NO': _armyNoController.text,
+      'rank': _rankController.text,
+      'regt': _regtCorpsController.text,
+      'date_of_death': _dateOfDeathController.text,
+      'place_of_death': _placeOfDeathController.text,
+      'cause_of_death': _causeOfDeathController.text,
+      'cnic': _cnicController.text,
+      'village': _villageController.text,
+      'nok_name': _nokNameController.text,
+      'relation': _relationController.text,
+      // add more fields if your PDF needs them
+    };
   }
 
   Widget _buildSectionTitle(String title) {
@@ -235,9 +259,10 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildSectionTitle("Personal Information"),
+                        _buildSectionTitle("Particulars of Deceased"),
                         _buildTextField(
                           "Army No",
+                          required: true,
                           _armyNoController,
                           onSubmit: () {
                             if (_armyNoController.text.isNotEmpty) {
@@ -246,38 +271,54 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
                           },
                         ),
                         SizedBox(height: 10),
-                        _buildTextField("Rank", _rankController),
+                        _buildTextField(
+                          "Rank",
+                          _rankController,
+                          required: true,
+                        ),
                         SizedBox(height: 10),
-                        _buildTextField("Name", _nameController),
+                        _buildTextField(
+                          "Name",
+                          _nameController,
+                          required: true,
+                        ),
                         SizedBox(height: 10),
                         _buildTextField("Father Name", _fatherNameController),
                         SizedBox(height: 10),
-                        _buildTextField("Regt/Corps", _regtCorpsController),
+                        _buildTextField(
+                          "Regt/Corps",
+                          _regtCorpsController,
+                          required: true,
+                        ),
                         SizedBox(height: 10),
                         _buildTextField(
                           "Date of Discharge",
                           _dateOfDischController,
+                          required: true,
                         ),
                         SizedBox(height: 10),
                         _buildTextField(
                           "Date of Death",
                           _dateOfDeathController,
+                          required: true,
                         ),
                         SizedBox(height: 10),
                         _buildTextField(
                           "Place of Death",
+                          required: true,
                           _placeOfDeathController,
                         ),
                         SizedBox(height: 10),
                         _buildTextField(
                           "Cause of Death",
+                          required: true,
                           _causeOfDeathController,
                         ),
                         SizedBox(height: 10),
                         _buildTextField("CNIC", _cnicController),
                         SizedBox(height: 10),
-                        _buildSectionTitle("Address Info"),
 
+                        //  _buildSectionTitle("Address Info"),
                         _buildTextField("Village", _villageController),
                         SizedBox(height: 10),
                         _buildTextField("Post Office", _postOfficeController),
@@ -344,13 +385,13 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
                           "DASB Letter Date",
                           _dasbLtrDateController,
                         ),
-                        const Divider(),
-                        _buildSectionTitle("اردو معلومات (Urdu Info)"),
-                        _buildTextField("نام", _urduNameController),
-                        SizedBox(height: 10),
-                        _buildTextField("ولدیت", _urduFatherNameController),
-                        SizedBox(height: 10),
-                        _buildTextField("رشتہ", _urduRelationController),
+                        // const Divider(),
+                        // _buildSectionTitle("اردو معلومات (Urdu Info)"),
+                        // _buildTextField("نام", _urduNameController),
+                        // SizedBox(height: 10),
+                        // _buildTextField("ولدیت", _urduFatherNameController),
+                        // SizedBox(height: 10),
+                        // _buildTextField("رشتہ", _urduRelationController),
                       ],
                     ),
                   ),
@@ -362,9 +403,17 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildSectionTitle(
-                          "اردو نیکسٹ آف کن معلومات (Urdu NOK Info)",
-                        ),
+                        _buildSectionTitle("اردو معلومات (Urdu Info)"),
+                        _buildTextField("نام", _urduNameController),
+                        SizedBox(height: 10),
+                        _buildTextField("ولدیت", _urduFatherNameController),
+                        SizedBox(height: 10),
+                        //    _buildTextField("رشتہ", _urduRelationController),
+
+                        // const Divider(),
+                        // _buildSectionTitle(
+                        //   "اردو نیکسٹ آف کن معلومات (Urdu NOK Info)",
+                        // ),
                         _buildTextField("نک نام", _urduNokNameController),
                         SizedBox(height: 10),
                         _buildTextField(
@@ -377,8 +426,8 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
                           _urduNextNokRelationController,
                         ),
                         SizedBox(height: 10),
-                        const Divider(),
-                        _buildSectionTitle("اردو پتہ (Urdu Address Info)"),
+                        //const Divider(),
+                        //   _buildSectionTitle("اردو پتہ (Urdu Address Info)"),
                         _buildTextField("گاؤں", _urduVillageController),
                         SizedBox(height: 10),
                         _buildTextField("ڈاک خانہ", _urduPostOfficeController),
@@ -406,11 +455,20 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Saved successfully")),
-                  );
+                  try {
+                    final pdfData = _getPdfData();
+                    await fillAndPrintPensionForm(pdfData);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("PDF ready to open!")),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -420,8 +478,12 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
                   vertical: 14,
                 ),
               ),
-              child: const Text("Save", style: TextStyle(color: Colors.white)),
+              child: const Text(
+                "Save & Print",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
+
             const SizedBox(width: 20),
             ElevatedButton(
               onPressed: () {

@@ -137,7 +137,7 @@ class _DasbScreenState extends State<DasbScreen> {
 
     final now = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     final dasbData = {
-      'province_id': _selectedProvinceId,
+      //   'province_id': _selectedProvinceId,
       'directorate_id': _selectedDirectorateId,
       'name': _dasbNameController.text.trim(),
       'created_by': _createdByController.text.trim(),

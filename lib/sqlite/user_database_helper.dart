@@ -1,5 +1,5 @@
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:path/path.dart';
 
 class DatabaseHelper2 {
   static final DatabaseHelper2 instance = DatabaseHelper2._internal();
@@ -16,25 +16,23 @@ class DatabaseHelper2 {
   }
 
   Future<Database> _initDB() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final path = "${dir.path}/pensioners.db";
-
-    sqfliteFfiInit(); // required for Windows/Linux
+    sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
 
-    return await openDatabase(
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'BasicTbl.db');
+    print('Database is stored at: $path');
+    return await databaseFactory.openDatabase(
       path,
-      version: 4, // bumped version again
-      onCreate: (db, version) async {
-        await _createTables(db);
-      },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        await _addMissingColumns(db);
-      },
+      options: OpenDatabaseOptions(
+        version: 4,
+        onCreate: _createTables,
+        onUpgrade: _addMissingColumns,
+      ),
     );
   }
 
-  Future<void> _createTables(Database db) async {
+  Future<void> _createTables(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $tableName (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -117,8 +115,11 @@ class DatabaseHelper2 {
     ''');
   }
 
-  /// 🧩 Ensures ALL columns exist (auto-adds missing ones)
-  Future<void> _addMissingColumns(Database db) async {
+  Future<void> _addMissingColumns(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
     final existingColumns = (await db.rawQuery(
       'PRAGMA table_info($tableName)',
     )).map((col) => col['name'] as String).toSet();
@@ -211,7 +212,7 @@ class DatabaseHelper2 {
   // 🔹 Insert
   Future<int> insert(Map<String, dynamic> row) async {
     final db = await database;
-    row["date_entry"] = row["date_entry"] ?? DateTime.now().toIso8601String();
+    row["date_entry"] ??= DateTime.now().toIso8601String();
     return await db.insert(tableName, row);
   }
 
@@ -256,7 +257,7 @@ class DatabaseHelper2 {
     );
   }
 
-  // Inside DatabaseHelper2 class
+  // 🔹 Get by personal_no
   Future<Map<String, dynamic>?> getRecordByPersonalNo(String personalNo) async {
     final db = await database;
     final result = await db.query(
@@ -265,10 +266,6 @@ class DatabaseHelper2 {
       whereArgs: [personalNo],
       limit: 1,
     );
-    if (result.isNotEmpty) {
-      return result.first;
-    } else {
-      return null;
-    }
+    return result.isNotEmpty ? result.first : null;
   }
 }

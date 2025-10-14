@@ -182,39 +182,37 @@ class Dashboard extends StatelessWidget {
                   onNavigate?.call(6);
                   break;
 
-                // case 'Pension Cases progress Form':
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (_) => const PensionProgressScreen(),
-                //     ),
-                //   );
-                //   break;
+                case 'List of Disabled':
+                  onNavigate?.call(7);
+                  break;
 
-                // case 'Benvolent Fund Data Entry Form':
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (_) => const BenvolentFundScreen(),
-                //     ),
-                //   );
-                //   break;
+                case 'Family / NOK Form':
+                  onNavigate?.call(25);
+                  break;
 
-                // case 'Hon Welfare Officers Data Entry Form':
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(builder: (_) => const HonWelfareScreen()),
-                //   );
-                //   break;
+                case 'Benvolent Fund Data Entry Form':
+                  onNavigate?.call(23);
+                  break;
 
-                // case 'Pension Merger Form':
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (_) => const PensionMergerScreen(),
-                //     ),
-                //   );
-                //   break;
+                case 'Hon Welfare Officers Data Entry Form':
+                  onNavigate?.call(27);
+                  break;
+
+                case 'Pension Merger Form':
+                  onNavigate?.call(31);
+                  break;
+
+                case 'Pensioners by Category':
+                  onNavigate?.call(15);
+                  break;
+
+                case 'Pensioners by Rank':
+                  onNavigate?.call(14);
+                  break;
+
+                case 'Pensioners by Regt/Corps':
+                  onNavigate?.call(16);
+                  break;
 
                 default:
                   ScaffoldMessenger.of(context).showSnackBar(

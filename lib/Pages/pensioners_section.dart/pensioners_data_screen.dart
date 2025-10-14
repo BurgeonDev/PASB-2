@@ -312,7 +312,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "gen_remarks": genRemarksController.text,
       "dasb": selectedDASB,
       "source_verification": selectedSourceVerification,
-      "do_verification": doVerificationController.text,
+      //  "do_verification": doVerificationController.text,
       "mil_qual": milQualController.text,
       "cmp_cnic_no": cmpCnicController.text,
       "id_marks": idMarksController.text,
@@ -352,6 +352,8 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     };
 
     try {
+      final db = await DatabaseHelper2.instance.database;
+
       int id = await DatabaseHelper2.instance.insert(row);
       print("Inserted row id: $id");
     } catch (error) {
