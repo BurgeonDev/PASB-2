@@ -220,7 +220,7 @@ class _DistrictScreenState extends State<DistrictScreen> {
   Widget _buildForm() {
     return Center(
       child: SizedBox(
-        width: 900,
+        width: 1200,
         child: Card(
           color: Colors.white,
           elevation: 3,
