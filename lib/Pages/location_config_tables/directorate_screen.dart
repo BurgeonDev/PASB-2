@@ -148,7 +148,7 @@ class _DirectorateScreenState extends State<DirectorateScreen> {
   Widget _buildForm() {
     return Center(
       child: SizedBox(
-        width: 600,
+        width: 700,
         child: Card(
           color: Colors.white,
           elevation: 3,
@@ -171,7 +171,7 @@ class _DirectorateScreenState extends State<DirectorateScreen> {
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    Expanded(child: _buildProvinceDropdown()),
+                    Flexible(flex: 2, child: _buildProvinceDropdown()),
                     const SizedBox(width: 10),
                     Expanded(
                       child: _textField(

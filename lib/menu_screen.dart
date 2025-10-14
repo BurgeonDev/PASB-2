@@ -154,7 +154,7 @@ class _HomeScreenState extends State<MenuScreen> {
           _pensionersMenuCombo(),
           _pensionClaimsMenuCombo(),
           tables(),
-          _commonDataMenuCombo(),
+          // _commonDataMenuCombo(),
           _navButton(index: 5, icon: Icons.settings, title: "Settings"),
           const Spacer(),
           _logoutButton(),
@@ -317,39 +317,39 @@ class _HomeScreenState extends State<MenuScreen> {
     );
   }
 
-  Widget _commonDataMenuCombo() {
-    return PopupMenuButton<int>(
-      offset: const Offset(0, 40),
-      color: Colors.white,
-      onSelected: (int value) => _navigateToPage(value),
-      itemBuilder: (context) => const [
-        PopupMenuItem<int>(value: 14, child: Text("Rank")),
-        PopupMenuItem<int>(value: 15, child: Text("Pension Type")),
-        PopupMenuItem<int>(value: 16, child: Text("Regt/Corps")),
-        // PopupMenuItem<int>(value: 13, child: Text("Designations")),
-        // PopupMenuItem<int>(value: 13, child: Text("Grades")),
-      ],
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: const [
-              Icon(Icons.dataset, color: Colors.white, size: 18),
-              SizedBox(width: 6),
-              Text("Common Data", style: TextStyle(color: Colors.white)),
-              SizedBox(width: 4),
-              Icon(Icons.arrow_drop_down, color: Colors.white),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _commonDataMenuCombo() {
+  //   return PopupMenuButton<int>(
+  //     offset: const Offset(0, 40),
+  //     color: Colors.white,
+  //     onSelected: (int value) => _navigateToPage(value),
+  //     itemBuilder: (context) => const [
+  //       // PopupMenuItem<int>(value: 14, child: Text("Rank")),
+  //       // PopupMenuItem<int>(value: 15, child: Text("Pension Type")),
+  //       // PopupMenuItem<int>(value: 16, child: Text("Regt/Corps")),
+  //       // PopupMenuItem<int>(value: 13, child: Text("Designations")),
+  //       // PopupMenuItem<int>(value: 13, child: Text("Grades")),
+  //     ],
+  //     child: Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 4),
+  //       child: Container(
+  //         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  //         decoration: BoxDecoration(
+  //           color: Colors.transparent,
+  //           borderRadius: BorderRadius.circular(8),
+  //         ),
+  //         child: Row(
+  //           children: const [
+  //             Icon(Icons.dataset, color: Colors.white, size: 18),
+  //             SizedBox(width: 6),
+  //             Text("Common Data", style: TextStyle(color: Colors.white)),
+  //             SizedBox(width: 4),
+  //             Icon(Icons.arrow_drop_down, color: Colors.white),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _pensionClaimsMenuCombo() {
     return PopupMenuButton<int>(
@@ -389,8 +389,11 @@ class _HomeScreenState extends State<MenuScreen> {
       color: Colors.white,
       onSelected: (int value) => _navigateToPage(value),
       itemBuilder: (context) => const [
-        PopupMenuItem<int>(value: 22, child: Text("Locations")),
         PopupMenuItem<int>(value: 21, child: Text("Banks")),
+        PopupMenuItem<int>(value: 22, child: Text("Location")),
+        PopupMenuItem<int>(value: 15, child: Text("Pension Type")),
+        PopupMenuItem<int>(value: 14, child: Text("Rank")),
+        PopupMenuItem<int>(value: 16, child: Text("Regt/Corps")),
         // PopupMenuItem<int>(value: 15, child: Text("Province")),
         // PopupMenuItem<int>(value: 16, child: Text("Directorate")),
         // PopupMenuItem<int>(value: 17, child: Text("DASB")),
@@ -408,7 +411,7 @@ class _HomeScreenState extends State<MenuScreen> {
             children: const [
               Icon(Icons.assignment, color: Colors.white, size: 18),
               SizedBox(width: 6),
-              Text("Config", style: TextStyle(color: Colors.white)),
+              Text("Common Data", style: TextStyle(color: Colors.white)),
               SizedBox(width: 4),
               Icon(Icons.arrow_drop_down, color: Colors.white),
             ],
