@@ -81,6 +81,28 @@ class AdminDB {
         FOREIGN KEY (dasb_id) REFERENCES dasb (id)
       )
     ''');
+
+    // ✅ TEHSIL TABLE
+    await db.execute('''
+      CREATE TABLE tehsil (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        district_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        created_at TEXT,
+        updated_at TEXT,
+        FOREIGN KEY (district_id) REFERENCES district (id) ON DELETE CASCADE
+      );
+    ''');
+    await db.execute('''
+  CREATE TABLE IF NOT EXISTS uc (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tehsil_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    created_at TEXT,
+    updated_at TEXT,
+    FOREIGN KEY (tehsil_id) REFERENCES tehsil (id)
+  );
+''');
   }
 
   // ✅ Insert a new record

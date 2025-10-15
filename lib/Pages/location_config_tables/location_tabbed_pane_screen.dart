@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:testing_window_app/Pages/location_config_tables/tehsil_screen.dart';
+import 'package:testing_window_app/Pages/location_config_tables/uc_screen.dart';
 
 // Import your location screens
 import 'province_screen.dart';
@@ -23,6 +25,8 @@ class _LocationTabbedPaneScreenState extends State<LocationTabbedPaneScreen>
     Tab(text: 'Directorate'),
     Tab(text: 'DASB'),
     Tab(text: 'District'),
+    Tab(text: 'Tehsil'),
+    Tab(text: 'UC'),
   ];
 
   @override
@@ -64,6 +68,8 @@ class _LocationTabbedPaneScreenState extends State<LocationTabbedPaneScreen>
           DirectorateScreen(),
           DasbScreen(),
           DistrictScreen(),
+          TehsilScreen(),
+          UcScreen(),
         ],
       ),
     );

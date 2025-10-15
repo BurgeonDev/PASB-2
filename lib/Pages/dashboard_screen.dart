@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:testing_window_app/Pages/pensioners_section.dart/pensioners_data_screen.dart';
-import 'package:testing_window_app/Pages/pensioners_section.dart/pensiontbl_data_screen.dart';
+import 'package:testing_window_app/utils/responsive)extensionts.dart'; // ✅ make sure your extension is imported
 
 class Dashboard extends StatelessWidget {
   final void Function(int)? onNavigate;
@@ -35,68 +34,82 @@ class Dashboard extends StatelessWidget {
         ),
         elevation: 4,
         backgroundColor: const Color(0xff1A73E8),
-        // centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(context.width * 0.015), // responsive padding
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: context.height * 0.02),
 
               // 🔹 Top Dashboard Summary Cards
               Wrap(
                 alignment: WrapAlignment.center,
-                spacing: 20,
-                runSpacing: 20,
+                spacing: context.width * 0.02,
+                runSpacing: context.height * 0.02,
                 children: dashboardItems.map((item) {
-                  return _buildDashboardCard(item);
+                  return _buildDashboardCard(context, item);
                 }).toList(),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: context.height * 0.03),
 
               // 🔹 Bottom Section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildDashboardColumn(context, [
-                    'Data Entry Form',
-                    'Family / NOK Form',
-                    'Pension Cases progress Form',
-                    'Benvolent Fund Data Entry Form',
-                    'Hon Welfare Officers Data Entry Form',
-                    'Pension Merger Form',
-                  ]),
-                  const SizedBox(width: 20),
-                  _buildDashboardColumn(context, [
-                    'Pensioners by Category',
-                    'Pensioners by Rank',
-                    'Pensioners by Regt/Corps',
-                    'Pensioners by Army-NAVY-PA',
-                    'Shuhada and Disabled',
-                    'Benevolent Fund by Regt',
-                    'Hon Wel Offrs Held Strength',
-                    'Pension Cases by Regt/Corps',
-                    'Pension Cases Overdue',
-                    'Pension Cases Status',
-                    'Pension Cases by Date',
-                  ]),
-                  const SizedBox(width: 20),
-                  _buildDashboardColumn(context, [
-                    'List of Shuhada',
-                    'List of Disabled',
-                    'List of Ben Fund Beneficiaries',
-                    'List of Ben Fund Verification',
-                    'List of Hon Welfare Officers',
-                    'List of Extn Cases Hon Wel Offrs',
-                    'List of Outstanding Pension Cases',
-                    'Summary of Verified Record',
-                  ]),
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Adjust number of columns depending on screen width
+                  final bool isSmall = context.width < 1000;
+
+                  return Flex(
+                    direction: isSmall ? Axis.vertical : Axis.horizontal,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildDashboardColumn(context, [
+                        'Data Entry Form',
+                        'Family / NOK Form',
+                        'Pension Cases progress Form',
+                        'Benvolent Fund Data Entry Form',
+                        'Hon Welfare Officers Data Entry Form',
+                        'Pension Merger Form',
+                      ]),
+                      SizedBox(
+                        width: isSmall ? 0 : context.width * 0.015,
+                        height: isSmall ? context.height * 0.02 : 0,
+                      ),
+                      _buildDashboardColumn(context, [
+                        'Pensioners by Category',
+                        'Pensioners by Rank',
+                        'Pensioners by Regt/Corps',
+                        'Pensioners by Army-NAVY-PA',
+                        'Shuhada and Disabled',
+                        'Benevolent Fund by Regt',
+                        'Hon Wel Offrs Held Strength',
+                        'Pension Cases by Regt/Corps',
+                        'Pension Cases Overdue',
+                        'Pension Cases Status',
+                        'Pension Cases by Date',
+                      ]),
+                      SizedBox(
+                        width: isSmall ? 0 : context.width * 0.015,
+                        height: isSmall ? context.height * 0.02 : 0,
+                      ),
+                      _buildDashboardColumn(context, [
+                        'List of Shuhada',
+                        'List of Disabled',
+                        'List of Ben Fund Beneficiaries',
+                        'List of Ben Fund Verification',
+                        'List of Hon Welfare Officers',
+                        'List of Extn Cases Hon Wel Offrs',
+                        'List of Outstanding Pension Cases',
+                        'Summary of Verified Record',
+                      ]),
+                    ],
+                  );
+                },
               ),
-              const SizedBox(height: 100),
+
+              SizedBox(height: context.height * 0.08),
             ],
           ),
         ),
@@ -104,18 +117,18 @@ class Dashboard extends StatelessWidget {
     );
   }
 
-  // 🔹 Card Widget (Top)
-  Widget _buildDashboardCard(Map<String, dynamic> item) {
+  // 🔹 Responsive Card Widget (Top)
+  Widget _buildDashboardCard(BuildContext context, Map<String, dynamic> item) {
     return Container(
-      width: 260,
-      height: 50,
+      width: context.width * 0.2, // 20% of screen width
+      height: context.height * 0.08, // 8% of screen height
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: List<Color>.from(item['gradient']),
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(context.width * 0.01),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -126,18 +139,22 @@ class Dashboard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const SizedBox(width: 16),
+          SizedBox(width: context.width * 0.01),
           CircleAvatar(
-            radius: 28,
+            radius: context.width * 0.02,
             backgroundColor: Colors.white.withOpacity(0.2),
-            child: Icon(item['icon'], size: 30, color: Colors.white),
+            child: Icon(
+              item['icon'],
+              size: context.width * 0.02,
+              color: Colors.white,
+            ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: context.width * 0.015),
           Expanded(
             child: Text(
               item['title'],
-              style: const TextStyle(
-                fontSize: 15,
+              style: TextStyle(
+                fontSize: context.width * 0.011,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
@@ -148,15 +165,17 @@ class Dashboard extends StatelessWidget {
     );
   }
 
-  // 🔹 Dashboard Column Builder
-  // 🔹 Dashboard Column Builder (with navigation)
+  // 🔹 Dashboard Column Builder (Responsive)
   Widget _buildDashboardColumn(BuildContext context, List<String> titles) {
     return Container(
-      width: 260,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+      width: context.width * 0.22, // 22% of screen width
+      padding: EdgeInsets.symmetric(
+        vertical: context.height * 0.02,
+        horizontal: context.width * 0.01,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(context.width * 0.008),
         border: Border.all(color: Colors.grey.shade300),
         boxShadow: [
           BoxShadow(
@@ -171,49 +190,37 @@ class Dashboard extends StatelessWidget {
           return DashboardButton(
             title: title,
             onTap: () {
-              // 🔹 Navigation logic for each button
               switch (title) {
                 case 'Data Entry Form':
                   onNavigate?.call(4);
-
                   break;
-
                 case 'List of Shuhada':
                   onNavigate?.call(6);
                   break;
-
                 case 'List of Disabled':
                   onNavigate?.call(7);
                   break;
-
                 case 'Family / NOK Form':
                   onNavigate?.call(25);
                   break;
-
                 case 'Benvolent Fund Data Entry Form':
                   onNavigate?.call(23);
                   break;
-
                 case 'Hon Welfare Officers Data Entry Form':
                   onNavigate?.call(27);
                   break;
-
                 case 'Pension Merger Form':
                   onNavigate?.call(31);
                   break;
-
                 case 'Pensioners by Category':
                   onNavigate?.call(15);
                   break;
-
                 case 'Pensioners by Rank':
                   onNavigate?.call(14);
                   break;
-
                 case 'Pensioners by Regt/Corps':
                   onNavigate?.call(16);
                   break;
-
                 default:
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Coming soon: $title')),
@@ -248,12 +255,15 @@ class _DashboardButtonState extends State<DashboardButton> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.symmetric(vertical: 6),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+          margin: EdgeInsets.symmetric(vertical: context.height * 0.007),
+          padding: EdgeInsets.symmetric(
+            vertical: context.height * 0.015,
+            horizontal: context.width * 0.008,
+          ),
           width: double.infinity,
           decoration: BoxDecoration(
             color: _hover ? const Color(0xffE3F2FD) : Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(context.width * 0.008),
             border: Border.all(
               color: _hover ? const Color(0xff1A73E8) : Colors.grey.shade300,
               width: 1.3,
@@ -273,7 +283,7 @@ class _DashboardButtonState extends State<DashboardButton> {
               widget.title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14.5,
+                fontSize: context.width * 0.011,
                 fontWeight: FontWeight.w600,
                 color: _hover ? const Color(0xff1A73E8) : Colors.grey.shade800,
               ),
