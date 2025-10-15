@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/components/delete_dialog.dart';
 import 'package:testing_window_app/viewmodel/admin_db_for_tables/bank_db.dart';
 
@@ -246,22 +247,40 @@ class _BankScreenState extends State<BankScreen> {
             const SizedBox(height: 10),
             Row(
               children: [
-                ElevatedButton(
-                  onPressed: () => _exportPDF(filtered),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Export PDF'),
+                SizedBox(
+                  width: 60,
+                  height: 40,
+                  child: ButtonComponent(
+                    buttonColor: Colors.grey,
+                    ontap: () {
+                      _exportPDF(filtered);
+                    },
+                    title: 'PDF',
+                  ),
                 ),
                 const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () => _exportExcel(filtered),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Export Excel'),
+                SizedBox(
+                  width: 80,
+                  height: 40,
+                  child: ButtonComponent(
+                    buttonColor: Colors.grey,
+                    ontap: () {
+                      _exportExcel(filtered);
+                    },
+                    title: 'Excel',
+                  ),
                 ),
                 const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: _clearFilters,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Clear Filters'),
+                SizedBox(
+                  width: 120,
+                  height: 40,
+                  child: ButtonComponent(
+                    buttonColor: Colors.grey,
+                    ontap: () {
+                      _clearFilters();
+                    },
+                    title: 'Clear Filter',
+                  ),
                 ),
                 const SizedBox(width: 10),
                 SizedBox(
@@ -279,17 +298,6 @@ class _BankScreenState extends State<BankScreen> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                // DropdownButton<String>(
-                //   value: _filterAbbreviation,
-                //   hint: const Text("Filter Abbreviation"),
-                //   items: [
-                //     const DropdownMenuItem(value: null, child: Text("All")),
-                //     ..._uniqueAbbreviations
-                //         .map((a) => DropdownMenuItem(value: a, child: Text(a)))
-                //         .toList(),
-                //   ],
-                //   onChanged: (val) => setState(() => _filterAbbreviation = val),
-                // ),
               ],
             ),
             const SizedBox(height: 10),

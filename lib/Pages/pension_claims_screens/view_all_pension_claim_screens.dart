@@ -244,6 +244,7 @@ class _ViewAllPensionClaimScreensState
                           width: 60,
                           height: 40,
                           child: ButtonComponent(
+                            buttonColor: Colors.grey,
                             ontap: () {
                               _exportToPdf();
                             },
@@ -255,6 +256,7 @@ class _ViewAllPensionClaimScreensState
                           width: 80,
                           height: 40,
                           child: ButtonComponent(
+                            buttonColor: Colors.grey,
                             ontap: () {
                               _exportToExcel();
                               print('object');
@@ -267,6 +269,7 @@ class _ViewAllPensionClaimScreensState
                           width: 120,
                           height: 40,
                           child: ButtonComponent(
+                            buttonColor: Colors.grey,
                             ontap: () {
                               setState(() {
                                 _selectedToPerson = null;

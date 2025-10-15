@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Container(
                           width: 400,
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: Colors.white,
                             border: Border.all(color: Colors.black, width: 4),
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(10),
@@ -137,9 +137,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           clipBehavior: Clip.antiAlias,
                           child: Image.asset(
                             "assets/c0f02f03-59c1-4669-8973-cb0fdc3b17cb.jpg",
-                            fit: BoxFit.fill,
-                            width: double.infinity,
-                            height: double.infinity,
+                            //  fit: BoxFit.fill,
+                            width: 200,
+                            height: 100,
                           ),
                         ),
                       ),

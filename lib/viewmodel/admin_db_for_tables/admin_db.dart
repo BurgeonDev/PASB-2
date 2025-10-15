@@ -97,13 +97,12 @@ class AdminDB {
 
   // ✅ Fetch records with WHERE condition
   Future<List<Map<String, dynamic>>> fetchWhere(
-      String table, String whereClause, List<dynamic> whereArgs) async {
+    String table,
+    String whereClause,
+    List<dynamic> whereArgs,
+  ) async {
     final db = await instance.database;
-    return await db.query(
-      table,
-      where: whereClause,
-      whereArgs: whereArgs,
-    );
+    return await db.query(table, where: whereClause, whereArgs: whereArgs);
   }
 
   // ✅ Update record
@@ -115,22 +114,13 @@ class AdminDB {
 
     final id = data['id'];
     data.remove('id'); // remove id from data to avoid overwriting
-    return await db.update(
-      table,
-      data,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.update(table, data, where: 'id = ?', whereArgs: [id]);
   }
 
   // ✅ Delete record by id
   Future<int> deleteRecord(String table, int id) async {
     final db = await instance.database;
-    return await db.delete(
-      table,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
   // ✅ Close database
