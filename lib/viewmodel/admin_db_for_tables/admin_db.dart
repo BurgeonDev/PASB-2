@@ -81,6 +81,28 @@ class AdminDB {
         FOREIGN KEY (dasb_id) REFERENCES dasb (id)
       )
     ''');
+
+    // ✅ TEHSIL TABLE
+    await db.execute('''
+      CREATE TABLE tehsil (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        district_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        created_at TEXT,
+        updated_at TEXT,
+        FOREIGN KEY (district_id) REFERENCES district (id) ON DELETE CASCADE
+      );
+    ''');
+    await db.execute('''
+  CREATE TABLE IF NOT EXISTS uc (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tehsil_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    created_at TEXT,
+    updated_at TEXT,
+    FOREIGN KEY (tehsil_id) REFERENCES tehsil (id)
+  );
+''');
   }
 
   // ✅ Insert a new record
@@ -97,13 +119,12 @@ class AdminDB {
 
   // ✅ Fetch records with WHERE condition
   Future<List<Map<String, dynamic>>> fetchWhere(
-      String table, String whereClause, List<dynamic> whereArgs) async {
+    String table,
+    String whereClause,
+    List<dynamic> whereArgs,
+  ) async {
     final db = await instance.database;
-    return await db.query(
-      table,
-      where: whereClause,
-      whereArgs: whereArgs,
-    );
+    return await db.query(table, where: whereClause, whereArgs: whereArgs);
   }
 
   // ✅ Update record
@@ -115,22 +136,13 @@ class AdminDB {
 
     final id = data['id'];
     data.remove('id'); // remove id from data to avoid overwriting
-    return await db.update(
-      table,
-      data,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.update(table, data, where: 'id = ?', whereArgs: [id]);
   }
 
   // ✅ Delete record by id
   Future<int> deleteRecord(String table, int id) async {
     final db = await instance.database;
-    return await db.delete(
-      table,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
   // ✅ Close database

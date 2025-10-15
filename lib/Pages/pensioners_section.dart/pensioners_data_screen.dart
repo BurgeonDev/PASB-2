@@ -1132,11 +1132,18 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                           title: 'NOK Details',
                           maxHeight: maxHeight,
                           children: [
-                            Textfieldcomponent(
-                              hinttext: "Date of Birth",
-                              controller: nokDoBirthController,
-                              validator: (v) => null,
-                            ),
+                            // Textfieldcomponent(
+                            //   hinttext: "Date of Birth",
+                            //   controller: nokDoBirthController,
+                            //   validator: (v) => null,
+                            //   onTap: () => setState(() => showCalendar = !showCalendar),
+                            // ),
+
+                            // Textfieldcomponent(
+                            //   hinttext: "Date of Birth",
+                            //   controller: nokDoBirthController,
+                            //   validator: (v) => null,
+                            // ),
                             //  const SizedBox(height: 8),
                             // Textfieldcomponent(
                             //   hinttext: "ID Marks",

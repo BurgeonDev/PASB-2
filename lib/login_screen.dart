@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:testing_window_app/utils/responsive)extensionts.dart';
 import 'package:testing_window_app/viewmodel/password_hash.dart';
 
 import 'package:provider/provider.dart';
@@ -125,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Expanded(
                         child: Container(
-                          width: 400,
+                          width: context.width * 0.35,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             border: Border.all(color: Colors.black, width: 4),

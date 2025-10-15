@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testing_window_app/components/button_component.dart';
+import 'package:testing_window_app/utils/responsive)extensionts.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -88,19 +89,26 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isWide = context.width > 1000;
+
     return Scaffold(
       backgroundColor: const Color(0xfff8f9fd),
       appBar: AppBar(
-        title: const Text("Employee Attendance"),
+        title: Text(
+          "Employee Attendance",
+          style: TextStyle(
+            fontSize: context.width * 0.012, // ✅ responsive title size
+          ),
+        ),
         backgroundColor: const Color(0xff27ADF5),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(context.width * 0.015),
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(context.width * 0.01),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(context.width * 0.005),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.04),
@@ -111,86 +119,77 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ),
           child: Column(
             children: [
-              // Buttons row
-              Row(
+              /// 🔹 Top Buttons
+              Wrap(
+                spacing: context.width * 0.008,
+                runSpacing: context.height * 0.01,
                 children: [
                   SizedBox(
-                    width: 60,
-                    height: 40,
+                    width: context.width * 0.06,
+                    height: context.height * 0.06,
                     child: ButtonComponent(
                       buttonColor: Colors.grey,
-                      ontap: () {
-                        //   _exportToPdf();
-                      },
+                      ontap: () {},
                       title: 'PDF',
                     ),
                   ),
-                  SizedBox(width: 10),
                   SizedBox(
-                    width: 80,
-                    height: 40,
+                    width: context.width * 0.07,
+                    height: context.height * 0.06,
                     child: ButtonComponent(
                       buttonColor: Colors.grey,
-                      ontap: () {
-                        //   _exportToExcel();
-                        //      print('object');
-                      },
+                      ontap: () {},
                       title: 'Excel',
                     ),
                   ),
-                  SizedBox(width: 10),
                   SizedBox(
-                    width: 120,
-                    height: 40,
+                    width: context.width * 0.12,
+                    height: context.height * 0.06,
                     child: ButtonComponent(
                       buttonColor: Colors.grey,
-                      ontap: () {
-                        // setState(() {
-                        //   for (var key in _selectedFilters.keys) {
-                        //     _selectedFilters[key] = null;
-                        //   }
-                        //   _searchController.clear();
-                        //   _applyFilters();
-                        // });
-                      },
+                      ontap: () {},
                       title: 'Clear Filters',
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 12),
+              SizedBox(height: context.height * 0.015),
 
-              // Header + Search
+              /// 🔹 Header + Search
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Attendance Records",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: context.width * 0.014,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(
-                    width: 260,
+                    width: isWide ? context.width * 0.25 : context.width * 0.5,
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
                         hintText: "Search employee...",
                         prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(
+                            context.width * 0.004,
+                          ),
                         ),
                         isDense: true,
-                        contentPadding: const EdgeInsets.all(10),
+                        contentPadding: EdgeInsets.all(context.width * 0.005),
                       ),
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 12),
+              SizedBox(height: context.height * 0.015),
 
-              // Table
-              // Table
+              /// 🔹 Table Section
               Expanded(
                 child: _filteredRows.isEmpty
                     ? const Center(child: Text("No records found"))
@@ -206,9 +205,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 child: DataTable(
                                   sortColumnIndex: _sortColumnIndex,
                                   sortAscending: _sortAscending,
-                                  columnSpacing: 20,
-                                  dataRowMinHeight: 45,
-                                  dataRowMaxHeight: 55,
+                                  columnSpacing: context.width * 0.02,
+                                  dataRowMinHeight: context.height * 0.06,
+                                  dataRowMaxHeight: context.height * 0.08,
                                   columns: [
                                     const DataColumn(
                                       label: Text(
@@ -261,18 +260,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           Row(
                                             children: [
                                               IconButton(
-                                                icon: const Icon(
+                                                icon: Icon(
                                                   Icons.edit,
                                                   color: Colors.blueAccent,
-                                                  size: 18,
+                                                  size: context.width * 0.012,
                                                 ),
                                                 onPressed: () {},
                                               ),
                                               IconButton(
-                                                icon: const Icon(
+                                                icon: Icon(
                                                   Icons.delete,
                                                   color: Colors.redAccent,
-                                                  size: 18,
+                                                  size: context.width * 0.012,
                                                 ),
                                                 onPressed: () {},
                                               ),
@@ -289,6 +288,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                             status,
                                             style: TextStyle(
                                               color: statusColor,
+                                              fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                         ),
@@ -303,11 +303,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       ),
               ),
 
-              // Pagination Controls
+              /// 🔹 Pagination Controls
               Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
+                padding: EdgeInsets.symmetric(
+                  vertical: context.height * 0.01,
+                  horizontal: context.width * 0.01,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -337,7 +337,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.arrow_back_ios, size: 18),
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            size: context.width * 0.012,
+                          ),
                           onPressed: _currentPage > 0
                               ? () => setState(() => _currentPage--)
                               : null,
@@ -346,7 +349,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           "Page ${_currentPage + 1} of ${(_filteredRows.length / _rowsPerPage).ceil()}",
                         ),
                         IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios, size: 18),
+                          icon: Icon(
+                            Icons.arrow_forward_ios,
+                            size: context.width * 0.012,
+                          ),
                           onPressed:
                               (_currentPage + 1) * _rowsPerPage <
                                   _filteredRows.length
