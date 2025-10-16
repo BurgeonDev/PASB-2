@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:testing_window_app/components/date_picker.dart';
 import 'package:testing_window_app/components/textfield_component.dart';
 import 'package:testing_window_app/components/toast_message.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
@@ -37,7 +38,11 @@ class _PensionersDataState extends State<PensionersDataScreen> {
   final TextEditingController nokNameController = TextEditingController();
   final TextEditingController nokCnicController = TextEditingController();
 
+  // for date
   final TextEditingController doDeathController = TextEditingController();
+  DateTime? selectedDate;
+  bool showCalendar = false;
+
   final TextEditingController placeDeathController = TextEditingController();
   final TextEditingController causeDeathController = TextEditingController();
   final TextEditingController locGraveyardController = TextEditingController();
@@ -532,7 +537,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "CL Disability": clDisabilityController.text,
       "General Remarks": genRemarksController.text,
       "DASB": selectedDASB,
-      "Source Verification": selectedSourceVerification,
+      "Source Verif...": selectedSourceVerification,
       "DO Verification": doVerificationController.text,
     };
     print('data------->$data');
@@ -775,22 +780,39 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               validator: (v) => null,
                             ),
                             const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "Date of Birth",
+                            InlineDatePickerField(
+                              hintText: "Date of Birth",
                               controller: dobController,
-                              validator: (v) => null,
+                              validator: (v) => null, // optional
                             ),
+
+                            // Textfieldcomponent(
+                            //   hinttext: "Date of Birth",
+                            //   controller: dobController,
+                            //   validator: (v) => null,
+                            // ),
                             const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "DO Enlist",
+                            // Textfieldcomponent(
+                            //   hinttext: "DO Enlist",
+                            //   controller: doEnltController,
+                            //   validator: (v) => null,
+                            // ),
+                            InlineDatePickerField(
+                              hintText: "DO Enlist",
                               controller: doEnltController,
-                              validator: (v) => null,
+                              validator: (v) => null, // optional
                             ),
+
                             const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "DO Discharge",
+                            // Textfieldcomponent(
+                            //   hinttext: "DO Discharge",
+                            //   controller: doDischController,
+                            //   validator: (v) => null,
+                            // ),
+                            InlineDatePickerField(
+                              hintText: "DO Discharge",
                               controller: doDischController,
-                              validator: (v) => null,
+                              validator: (v) => null, // optional
                             ),
                             const SizedBox(height: 8),
                             Textfieldcomponent(
@@ -1039,12 +1061,18 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                           title: "Shuhada / Disabled Data",
                           maxHeight: maxHeight,
                           children: [
-                            Textfieldcomponent(
-                              hinttext: "DO Death / Shahadat",
+                            InlineDatePickerField(
+                              hintText: "DO Death / Shahadat",
                               controller: doDeathController,
-                              validator: (v) =>
-                                  null, // or make required if needed
+                              validator: (v) => null, // optional
                             ),
+
+                            // Textfieldcomponent(
+                            //   hinttext: "DO Death / Shahadat",
+                            //   controller: doDeathController,
+                            //   validator: (v) =>
+                            //       null, // or make required if needed
+                            // ),
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "Place Death / Shahadat",
@@ -1082,11 +1110,17 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               validator: (v) => null,
                             ),
                             const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "DO Disability",
+                            // Textfieldcomponent(
+                            //   hinttext: "DO Disability",
+                            //   controller: doDisabilityController,
+                            //   validator: (v) => null,
+                            // ),
+                            InlineDatePickerField(
+                              hintText: "DO Disability",
                               controller: doDisabilityController,
-                              validator: (v) => null,
+                              validator: (v) => null, // optional
                             ),
+
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "Nature of Disability",
@@ -1128,7 +1162,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               width: 340,
                               child: _buildDropdown(
                                 borderColor: Colors.red,
-                                hintText: "Source Verification *",
+                                hintText: "Source Verifi... *",
                                 items: sourceVerificationOptions,
                                 value: selectedSourceVerification,
                                 onChanged: (val) {
@@ -1142,11 +1176,17 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "DO Verification",
+                            InlineDatePickerField(
+                              hintText: "DO Verification",
                               controller: doVerificationController,
-                              validator: (v) => null,
+                              validator: (v) => null, // optional
                             ),
+
+                            // Textfieldcomponent(
+                            //   hinttext: "DO Verification",
+                            //   controller: doVerificationController,
+                            //   validator: (v) => null,
+                            // ),
                           ],
                         ),
                       ),

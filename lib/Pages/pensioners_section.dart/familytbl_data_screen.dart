@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:testing_window_app/components/date_picker.dart';
 import 'package:testing_window_app/components/textfield_component.dart';
 import 'package:testing_window_app/sqlite/familTbl_database_helper.dart';
 import 'package:testing_window_app/sqlite/lupension_database_Helper.dart';
@@ -340,9 +341,34 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
                   ),
                   _buildTextField("NOK Name", _nokNameController),
                   _buildTextField("NOK Relation", _nokRelationController),
-                  _buildTextField("NOK DOB", _nokDoBirthController),
-                  _buildTextField("NOK DO Death", _nokDoDeathController),
-                  _buildTextField("NOK DO Marriage", _nokDoMarriageController),
+                  SizedBox(
+                    width: 350,
+                    child: InlineDatePickerField(
+                      hintText: "NOK DOB",
+                      controller: _nokDoBirthController,
+                      validator: (v) => null, // optional
+                    ),
+                  ),
+
+                  //  _buildTextField("NOK DOB", _nokDoBirthController),
+                  SizedBox(
+                    width: 350,
+                    child: InlineDatePickerField(
+                      hintText: "NOK DO Death",
+                      controller: _nokDoDeathController,
+                      validator: (v) => null, // optional
+                    ),
+                  ),
+                  // _buildTextField("NOK DO Death", _nokDoDeathController),
+                  SizedBox(
+                    width: 350,
+                    child: InlineDatePickerField(
+                      hintText: "NOK DO Marriage",
+                      controller: _nokDoMarriageController,
+                      validator: (v) => null, // optional
+                    ),
+                  ),
+                  //  _buildTextField("NOK DO Marriage", _nokDoMarriageController),
                   _buildTextField("NOK Edn", _nokEdnController),
                   _buildTextField("NOK Profession", _nokProfessionController),
                   _buildTextField(
@@ -361,14 +387,30 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
                     "NOK Monthly Income",
                     _nokMonthlyIncomeController,
                   ),
-                  _buildTextField("NOK DO Divorced", _nokDoDivorcedController),
+                  SizedBox(
+                    width: 350,
+                    child: InlineDatePickerField(
+                      hintText: "NOK DO Divorced",
+                      controller: _nokDoDivorcedController,
+                      validator: (v) => null, // optional
+                    ),
+                  ),
+                  //  _buildTextField("NOK DO Divorced", _nokDoDivorcedController),
                   _buildTextField(
                     "Amount Children Allce",
                     _amountChildrenAllceController,
                   ),
-                  _buildTextField(
-                    "DO Children Allce",
-                    _doChildrenAllceController,
+                  // _buildTextField(
+                  //   "DO Children Allce",
+                  //   _doChildrenAllceController,
+                  // ),
+                  SizedBox(
+                    width: 350,
+                    child: InlineDatePickerField(
+                      hintText: "DO Children Allce",
+                      controller: _doChildrenAllceController,
+                      validator: (v) => null, // optional
+                    ),
                   ),
                   _buildTextField("NOK Remarks", _nokRemarksController),
                   _buildTextField("NOK PSB No", _nokPsbNoController),
