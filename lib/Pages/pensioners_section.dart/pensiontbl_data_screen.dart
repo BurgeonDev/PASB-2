@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testing_window_app/components/date_picker.dart';
 import 'package:testing_window_app/components/textfield_component.dart';
 
 import 'package:testing_window_app/sqlite/pensiontbll_database_Helper.dart';
@@ -326,7 +327,16 @@ class _PensiontblDataScreenState extends State<PensiontblDataScreen> {
                       },
                     ),
                   ),
-                  _buildTextField("PenDOEntry", _penDOEntryController),
+
+                  SizedBox(
+                    width: 350,
+                    child: InlineDatePickerField(
+                      hintText: "PenDOEntry",
+                      controller: _penDOEntryController,
+                      validator: (v) => null, // optional
+                    ),
+                  ),
+                  //   _buildTextField("PenDOEntry", _penDOEntryController),
                   _buildTextField("RegSerNo", _regSerNoController),
                   _buildTextField(
                     "GpInsuranceClaimLtrDate",
@@ -368,7 +378,16 @@ class _PensiontblDataScreenState extends State<PensiontblDataScreen> {
                   _buildTextField("VerifiedBy", _verifiedByController),
                   _buildTextField("FirstWitness", _firstWitnessController),
                   _buildTextField("SecondWitness", _secondWitnessController),
-                  _buildTextField("DOMarriage", _domarriageController),
+
+                  SizedBox(
+                    width: 350,
+                    child: InlineDatePickerField(
+                      hintText: "DOMarriage",
+                      controller: _domarriageController,
+                      validator: (v) => null, // optional
+                    ),
+                  ),
+                  //   _buildTextField("DOMarriage", _domarriageController),
                   _buildTextField("NextNOKName", _nextNOKNameController),
                   // NextNOKRelation Dropdown
                   SizedBox(

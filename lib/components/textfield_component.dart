@@ -91,12 +91,17 @@ class _TextfieldcomponentState extends State<Textfieldcomponent> {
               ? widget.surficon
               : (showSuffix ? widget.surficon : null),
           prefixIcon: widget.prefixIcon,
+
+          // ✅ Make long hints wrap or fade safely
           hintText: widget.hinttext,
+          hintMaxLines: 1, // ensures single-line display
           hintStyle: const TextStyle(
+            overflow: TextOverflow.ellipsis, // prevents overflow
             fontWeight: FontWeight.w400,
             color: Color(0xff6E6E6E),
             fontSize: 16,
           ),
+
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 8,
             vertical: 12,

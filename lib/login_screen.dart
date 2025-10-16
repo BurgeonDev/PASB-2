@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
               PasswordUtils.verifyPassword(password, user.password),
         );
 
-        print("✅ Login success for: ${matchedUser.username}");
+        print("✅ Login success for --> ${matchedUser.username} ");
       } catch (e) {
         print("❌ No matching user found. Error: $e");
         matchedUser = null;
@@ -79,10 +79,14 @@ class _LoginScreenState extends State<LoginScreen> {
           name: matchedUser.username,
           email: matchedUser.email ?? "",
           phone: matchedUser.phone,
+          role: matchedUser.rank,
+          location: matchedUser.province ?? matchedUser.nationWideValue ?? "",
         );
 
         print(
-          'user data stored ---> ${matchedUser.username} ${matchedUser.email} ${matchedUser.phone} ',
+          'user data stored ---> '
+          '${matchedUser.username}, ${matchedUser.email}, ${matchedUser.phone}, '
+          '${matchedUser.rank}, ${matchedUser.province ?? matchedUser.nationWideValue}',
         );
 
         Navigator.pushReplacement(

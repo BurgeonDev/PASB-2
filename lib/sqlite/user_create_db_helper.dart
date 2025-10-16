@@ -20,7 +20,7 @@ class UserCreateDbHelper {
 
     return await openDatabase(
       path,
-      version: 2, // 🔹 Updated version (important when adding new columns)
+      version: 2,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
     );
@@ -28,7 +28,7 @@ class UserCreateDbHelper {
 
   Future _createDB(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE basictbl(
+      CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date_entry TEXT,
         username TEXT NOT NULL,
@@ -50,7 +50,6 @@ class UserCreateDbHelper {
     ''');
   }
 
-  // 🔹 If the user already has a database, this handles new column additions
   Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute("ALTER TABLE users ADD COLUMN created_by TEXT;");
@@ -60,20 +59,17 @@ class UserCreateDbHelper {
     }
   }
 
-  // Insert a new user
   Future<int> insertUser(UserModel user) async {
     final db = await instance.database;
     return await db.insert('users', user.toMap());
   }
 
-  // Get all users
   Future<List<UserModel>> getUsers() async {
     final db = await instance.database;
     final result = await db.query('users');
     return result.map((map) => UserModel.fromMap(map)).toList();
   }
 
-  // Get user by phone
   Future<UserModel?> getUserByPhone(String phone) async {
     final db = await instance.database;
     final result = await db.query(
@@ -87,7 +83,6 @@ class UserCreateDbHelper {
     return null;
   }
 
-  // Get user by email
   Future<UserModel?> getUserByEmail(String email) async {
     final db = await instance.database;
     final result = await db.query(
@@ -101,13 +96,11 @@ class UserCreateDbHelper {
     return null;
   }
 
-  // Delete user
   Future<int> deleteUser(int id) async {
     final db = await instance.database;
     return await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
-  // Update user (with updated_by and updated_at)
   Future<int> updateUser(UserModel user) async {
     final db = await instance.database;
     return await db.update(

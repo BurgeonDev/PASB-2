@@ -378,6 +378,15 @@ class _UserCreateScreenState extends State<UserCreateScreen> {
                 const SizedBox(height: 15),
 
                 _buildLabeledDropdown(
+                  label: "Rank *",
+                  value: selectedRank,
+                  items: ranks,
+                  hint: "Select Rank",
+                  onChanged: (v) => setState(() => selectedRank = v),
+                ),
+                const SizedBox(height: 15),
+
+                _buildLabeledDropdown(
                   label: "Role *",
                   value: selectedRole,
                   items: roles,
