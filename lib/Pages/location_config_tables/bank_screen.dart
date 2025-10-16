@@ -108,6 +108,47 @@ class _BankScreenState extends State<BankScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    _bankNameController.dispose();
+    _abbreviationController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  int? _sortColumnIndex; // Add this at class level
+  String? _sortColumn;
+  bool _isAscending = true;
+
+  void _sort<T>(
+    int columnIndex,
+    String columnName,
+    T Function(Map<String, dynamic> bank) getField,
+  ) {
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      if (_sortColumn == columnName) {
+        _isAscending = !_isAscending;
+      } else {
+        _sortColumn = columnName;
+        _isAscending = true;
+      }
+
+      _bankList.sort((a, b) {
+        final aValue = getField(a);
+        final bValue = getField(b);
+
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return _isAscending ? -1 : 1;
+        if (bValue == null) return _isAscending ? 1 : -1;
+
+        return _isAscending
+            ? (aValue as Comparable).compareTo(bValue)
+            : (bValue as Comparable).compareTo(aValue);
+      });
+    });
+  }
+
   // ---------------- FILTER + SEARCH ----------------
   List<Map<String, dynamic>> get _filteredBanks {
     final query = _searchController.text.toLowerCase();
@@ -123,20 +164,28 @@ class _BankScreenState extends State<BankScreen> {
       return matchesSearch && matchesFilter;
     }).toList();
 
+    // sort here instead of sorting the full list
+    if (_sortColumn != null) {
+      filtered.sort((a, b) {
+        final aValue = a[_sortColumn];
+        final bValue = b[_sortColumn];
+
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return _isAscending ? -1 : 1;
+        if (bValue == null) return _isAscending ? 1 : -1;
+
+        return _isAscending
+            ? (aValue as Comparable).compareTo(bValue)
+            : (bValue as Comparable).compareTo(aValue);
+      });
+    }
+
     final start = _currentPage * _rowsPerPage;
     final end = start + _rowsPerPage;
     return filtered.sublist(
       start,
       end > filtered.length ? filtered.length : end,
     );
-  }
-
-  List<String> get _uniqueAbbreviations {
-    final abbreviations = _bankList
-        .map((b) => b['abbreviation']?.toString() ?? '')
-        .toSet();
-    abbreviations.remove('');
-    return abbreviations.toList();
   }
 
   // ---------------- EXPORT PDF ----------------
@@ -282,7 +331,7 @@ class _BankScreenState extends State<BankScreen> {
                     title: 'Clear Filter',
                   ),
                 ),
-                const SizedBox(width: 10),
+                Spacer(),
                 SizedBox(
                   width: 200,
                   child: TextField(
@@ -326,20 +375,46 @@ class _BankScreenState extends State<BankScreen> {
     final totalPages = (totalFiltered / _rowsPerPage).ceil();
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        IconButton(
-          onPressed: _currentPage > 0
-              ? () => setState(() => _currentPage--)
-              : null,
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
-        Text('Page ${_currentPage + 1} of $totalPages'),
-        IconButton(
-          onPressed: _currentPage < totalPages - 1
-              ? () => setState(() => _currentPage++)
-              : null,
-          icon: const Icon(Icons.arrow_forward_ios),
+        // ---------------- Page numbers on left ----------------
+        // Row(
+        //   children: List.generate(totalPages, (index) {
+        //     final pageNumber = index + 1;
+        //     final isSelected = _currentPage == index;
+        //     return Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 4),
+        //       child: ElevatedButton(
+        //         onPressed: () => setState(() => _currentPage = index),
+        //         style: ElevatedButton.styleFrom(
+        //           backgroundColor: isSelected ? Colors.blue : Colors.grey[300],
+        //           foregroundColor: isSelected ? Colors.white : Colors.black,
+        //           minimumSize: const Size(40, 40),
+        //           padding: EdgeInsets.zero,
+        //         ),
+        //         child: Text(pageNumber.toString()),
+        //       ),
+        //     );
+        //   }),
+        // ),
+
+        // ---------------- Arrows and current page info on right ----------------
+        Row(
+          children: [
+            // IconButton(
+            //   onPressed: _currentPage > 0
+            //       ? () => setState(() => _currentPage--)
+            //       : null,
+            //   icon: const Icon(Icons.arrow_back_ios),
+            // ),
+            Text('Page ${_currentPage + 1} of $totalPages'),
+            IconButton(
+              onPressed: _currentPage < totalPages - 1
+                  ? () => setState(() => _currentPage++)
+                  : null,
+              icon: const Icon(Icons.arrow_forward_ios),
+            ),
+          ],
         ),
       ],
     );
@@ -352,55 +427,132 @@ class _BankScreenState extends State<BankScreen> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: constraints.maxWidth),
-            child: DataTable(
-              columnSpacing: 25,
-              headingRowColor: MaterialStateProperty.all(
-                const Color(0xffe8f4fd),
-              ),
-              dataRowMinHeight: 50,
-              dataRowMaxHeight: 60,
-              columns: const [
-                DataColumn(label: Text("Actions")),
-                DataColumn(label: Text("ID")),
-                DataColumn(label: Text("Bank Name")),
-                DataColumn(label: Text("Abbreviation")),
-                DataColumn(label: Text("Created By")),
-                DataColumn(label: Text("Created At")),
-                DataColumn(label: Text("Updated By")),
-                DataColumn(label: Text("Updated At")),
-              ],
-              rows: data.map((bank) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => _editBank(bank),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () =>
-                                _deleteBankWithDialog(bank['id'] as int),
-                          ),
-                        ],
+        return Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: MediaQuery.of(context).size.width,
+                ),
+                child: DataTable(
+                  sortColumnIndex: _sortColumnIndex,
+                  sortAscending: _isAscending,
+                  columnSpacing: 25,
+                  headingRowColor: MaterialStateProperty.all(
+                    const Color(0xffe8f4fd),
+                  ),
+                  dataRowMinHeight: 50,
+                  dataRowMaxHeight: 60,
+                  columns: [
+                    const DataColumn(label: Text("Actions")),
+                    DataColumn(
+                      label: const Text("ID"),
+                      onSort: (columnIndex, _) =>
+                          _sort<int>(columnIndex, 'id', (b) => b['id'] as int),
+                    ),
+                    DataColumn(
+                      label: const Text("Bank Name"),
+                      onSort: (columnIndex, _) => _sort<String>(
+                        columnIndex,
+                        'name',
+                        (b) => b['name'] ?? '',
                       ),
                     ),
-                    DataCell(Text(bank['id'].toString())),
-                    DataCell(Text(bank['name'] ?? '')),
-                    DataCell(Text(bank['abbreviation'] ?? '')),
-                    DataCell(Text(bank['created_by'] ?? '')),
-                    DataCell(Text(bank['created_at'] ?? '')),
-                    DataCell(Text(bank['updated_by'] ?? '')),
-                    DataCell(Text(bank['updated_at'] ?? '')),
+                    DataColumn(
+                      label: const Text("Abbreviation"),
+                      onSort: (columnIndex, _) => _sort<String>(
+                        columnIndex,
+                        'abbreviation',
+                        (b) => b['abbreviation'] ?? '',
+                      ),
+                    ),
+                    DataColumn(
+                      label: const Text("Created By"),
+                      onSort: (columnIndex, _) => _sort<String>(
+                        columnIndex,
+                        'created_by',
+                        (b) => b['created_by'] ?? '',
+                      ),
+                    ),
+                    DataColumn(
+                      label: const Text("Created At"),
+                      onSort: (columnIndex, _) => _sort<String>(
+                        columnIndex,
+                        'created_at',
+                        (b) => b['created_at'] ?? '',
+                      ),
+                    ),
+                    DataColumn(
+                      label: const Text("Updated By"),
+                      onSort: (columnIndex, _) => _sort<String>(
+                        columnIndex,
+                        'updated_by',
+                        (b) => b['updated_by'] ?? '',
+                      ),
+                    ),
+                    DataColumn(
+                      label: const Text("Updated At"),
+                      onSort: (columnIndex, _) => _sort<String>(
+                        columnIndex,
+                        'updated_at',
+                        (b) => b['updated_at'] ?? '',
+                      ),
+                    ),
                   ],
-                );
-              }).toList(),
+                  rows: data.map((bank) {
+                    return DataRow(
+                      cells: [
+                        DataCell(
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.blue,
+                                ),
+                                onPressed: () => _editBank(bank),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () =>
+                                    _deleteBankWithDialog(bank['id'] as int),
+                              ),
+                            ],
+                          ),
+                        ),
+                        DataCell(Text(bank['id'].toString())),
+                        DataCell(Text(bank['name'] ?? '')),
+                        DataCell(Text(bank['abbreviation'] ?? '')),
+                        DataCell(Text(bank['created_by'] ?? '')),
+                        DataCell(
+                          Text(
+                            bank['created_at'] != null
+                                ? DateFormat(
+                                    'dd-MM-yyyy',
+                                  ).format(DateTime.parse(bank['created_at']))
+                                : '',
+                          ),
+                        ),
+                        DataCell(Text(bank['updated_by'] ?? '')),
+                        DataCell(
+                          Text(
+                            bank['updated_at'] != null
+                                ? DateFormat(
+                                    'dd-MM-yyyy',
+                                  ).format(DateTime.parse(bank['updated_at']))
+                                : '',
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
         );
@@ -411,7 +563,7 @@ class _BankScreenState extends State<BankScreen> {
   Widget _buildForm() {
     return Center(
       child: SizedBox(
-        width: 600,
+        width: 800,
         child: Card(
           color: Colors.white,
           elevation: 3,
@@ -423,15 +575,15 @@ class _BankScreenState extends State<BankScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Add Bank",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 20),
+                // const Text(
+                //   "Add Bank",
+                //   style: TextStyle(
+                //     fontSize: 20,
+                //     fontWeight: FontWeight.bold,
+                //     color: Colors.black87,
+                //   ),
+                // ),
+                // const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
@@ -444,38 +596,38 @@ class _BankScreenState extends State<BankScreen> {
                         'Abbreviation',
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: _saveBank,
-                      icon: const Icon(Icons.save),
-                      label: Text(_editingId == null ? 'Create' : 'Update'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
+                    const SizedBox(width: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _saveBank,
+                          icon: const Icon(Icons.save),
+                          label: Text(_editingId == null ? 'Save' : 'Update'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 16,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      onPressed: _clearForm,
-                      icon: const Icon(Icons.clear),
-                      label: const Text('Clear'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
+                        const SizedBox(width: 10),
+                        ElevatedButton.icon(
+                          onPressed: _clearForm,
+                          icon: const Icon(Icons.clear),
+                          label: const Text('Reset'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 16,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),

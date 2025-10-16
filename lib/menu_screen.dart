@@ -211,14 +211,65 @@ class _HomeScreenState extends State<MenuScreen> {
     return _popupMenu("Reports", Icons.insert_chart, const [
       PopupMenuItem<int>(value: 6, child: Text("List of Shuhada")),
       PopupMenuItem<int>(value: 7, child: Text("List of Disabled")),
+      PopupMenuItem<int>(
+        value: 3,
+        child: Text("List of Ben Fund Beneficiaries"),
+      ),
+      PopupMenuItem<int>(
+        value: 3,
+        child: Text("List of Ben Fund Verification"),
+      ),
+      PopupMenuItem<int>(value: 3, child: Text("List of Hon Welfare Officers")),
+      PopupMenuItem<int>(
+        value: 3,
+        child: Text("List of Outstanding Pension Case"),
+      ),
+      PopupMenuItem<int>(value: 3, child: Text("Summary of Verified Record")),
+      PopupMenuItem<int>(
+        value: 3,
+        child: Text("List of Extn Cases Hon Wel Offrs"),
+      ),
+      PopupMenuItem<int>(value: 3, child: Text("Summary Data")),
     ]);
   }
 
   Widget _pensionersMenuCombo() {
-    return _popupMenu("Pensioners Data", Icons.elderly, const [
-      PopupMenuItem<int>(value: 4, child: Text("Add Basic Data")),
-      PopupMenuItem<int>(value: 8, child: Text("List Basic Data")),
-    ]);
+    return PopupMenuButton<int>(
+      offset: const Offset(0, 40),
+      color: Colors.white,
+      onSelected: (int value) => _navigateToPage(value),
+      itemBuilder: (context) => const [
+        PopupMenuItem<int>(value: 4, child: Text("Add Basic Data")),
+        PopupMenuItem<int>(value: 8, child: Text("List Basic Data")),
+        PopupMenuItem<int>(value: 23, child: Text("Add ben Data")),
+        PopupMenuItem<int>(value: 24, child: Text("List ben data")),
+        PopupMenuItem<int>(value: 25, child: Text("Add family data")),
+        PopupMenuItem<int>(value: 26, child: Text("List family data")),
+        PopupMenuItem<int>(value: 27, child: Text("Add HW data")),
+        PopupMenuItem<int>(value: 28, child: Text("List HW data")),
+        PopupMenuItem<int>(value: 29, child: Text("Add Pension data")),
+        PopupMenuItem<int>(value: 30, child: Text("List Pension data")),
+      ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: const [
+              Icon(Icons.elderly, color: Colors.white, size: 18),
+              SizedBox(width: 6),
+              Text("Pensioners Data", style: TextStyle(color: Colors.white)),
+              SizedBox(width: 4),
+              Icon(Icons.arrow_drop_down, color: Colors.white),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _pensionClaimsMenuCombo() {
@@ -233,6 +284,9 @@ class _HomeScreenState extends State<MenuScreen> {
       PopupMenuItem<int>(value: 21, child: Text("Banks")),
       PopupMenuItem<int>(value: 22, child: Text("Location")),
       PopupMenuItem<int>(value: 15, child: Text("Pension Type")),
+      PopupMenuItem<int>(value: 14, child: Text("Rank")),
+
+      PopupMenuItem<int>(value: 16, child: Text("RegtCorps")),
     ]);
   }
 

@@ -51,16 +51,20 @@ class _LocationTabbedPaneScreenState extends State<LocationTabbedPaneScreen>
           'Location Management',
           style: TextStyle(color: Colors.white),
         ),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: myTabs,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          isScrollable: true, // horizontal scroll for better UX
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(27), // <-- reduced height
+          child: TabBar(
+            controller: _tabController,
+            tabs: myTabs,
+            indicatorColor: Colors.white,
+            indicatorWeight: 3,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            isScrollable: true,
+          ),
         ),
       ),
+
       body: TabBarView(
         controller: _tabController,
         children: const [

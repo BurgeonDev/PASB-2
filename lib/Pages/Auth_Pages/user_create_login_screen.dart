@@ -253,14 +253,12 @@ class _UserCreateScreenState extends State<UserCreateScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xff27ADF5),
-        title: Center(
-          child: Text(
-            "Create User Account",
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueGrey.shade900,
-            ),
+        title: Text(
+          "Create User Account",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.blueGrey.shade900,
           ),
         ),
       ),

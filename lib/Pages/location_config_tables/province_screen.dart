@@ -27,10 +27,24 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
   int _rowsPerPage = 10;
   int _currentPage = 0;
 
+  // Sorting
+  int? _sortColumnIndex;
+  bool _sortAscending = true;
+
   @override
   void initState() {
     super.initState();
     _loadProvinces();
+  }
+
+  String _formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('dd MM yyyy').format(date);
+    } catch (e) {
+      return dateStr;
+    }
   }
 
   Future<void> _loadProvinces() async {
@@ -39,7 +53,8 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
   }
 
   Future<void> _saveProvince() async {
-    final now = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    final now = DateFormat('dd MM yyyy').format(DateTime.now());
+
     final provinceData = {
       'name': _provinceNameController.text.trim(),
       'created_by': _createdByController.text.trim().isEmpty
@@ -62,10 +77,11 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
     if (_editingId == null) {
       await AdminDB.instance.insertRecord('province', provinceData);
     } else {
-      // await AdminDB.instance.updateRecord('province', _editingId!, {
-      //   ...provinceData,
-      //   'updated_at': now,
-      // });
+      await AdminDB.instance.updateRecord('province', {
+        ...provinceData,
+        'id': _editingId!, // include the ID here
+        'updated_at': now,
+      });
     }
 
     _clearForm();
@@ -111,15 +127,61 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
     });
   }
 
-  // ---------------- FILTER + SEARCH ----------------
+  // ---------------- FILTER + SEARCH + SORT ----------------
   List<Map<String, dynamic>> get _filteredProvinces {
     final query = _searchController.text.toLowerCase();
-    final filtered = _provinceList.where((province) {
+    List<Map<String, dynamic>> filtered = _provinceList.where((province) {
       return query.isEmpty ||
           (province['name']?.toLowerCase().contains(query) ?? false) ||
-          (province['created_by']?.toLowerCase().contains(query) ?? false);
+          (province['created_by']?.toLowerCase().contains(query) ?? false) ||
+          (province['updated_by']?.toLowerCase().contains(query) ?? false);
     }).toList();
 
+    // Apply sorting
+    if (_sortColumnIndex != null) {
+      filtered.sort((a, b) {
+        dynamic valA;
+        dynamic valB;
+
+        switch (_sortColumnIndex) {
+          case 1: // S No
+            valA = a['id'];
+            valB = b['id'];
+            break;
+          case 2: // Province Name
+            valA = a['name'] ?? '';
+            valB = b['name'] ?? '';
+            break;
+          case 3: // Updated By
+            valA = a['updated_by'] ?? '';
+            valB = b['updated_by'] ?? '';
+            break;
+          case 4: // Created By
+            valA = a['created_by'] ?? '';
+            valB = b['created_by'] ?? '';
+            break;
+          case 5: // Updated At
+            valA = a['updated_at'] ?? '';
+            valB = b['updated_at'] ?? '';
+            break;
+          case 6: // Created At
+            valA = a['created_at'] ?? '';
+            valB = b['created_at'] ?? '';
+            break;
+          default:
+            valA = a['id'];
+            valB = b['id'];
+        }
+
+        if (_sortAscending) {
+          return valA.toString().compareTo(valB.toString());
+        } else {
+          return valB.toString().compareTo(valA.toString());
+        }
+      });
+    }
+
+    // Pagination
     final start = _currentPage * _rowsPerPage;
     final end = start + _rowsPerPage;
     return filtered.sublist(
@@ -262,13 +324,13 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
                     title: 'Clear Filter',
                   ),
                 ),
-                const SizedBox(width: 10),
+                const Spacer(),
                 SizedBox(
                   width: 200,
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: "Search...",
+                      hintText: "Search",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -293,7 +355,8 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
       final query = _searchController.text.toLowerCase();
       return query.isEmpty ||
           (province['name']?.toLowerCase().contains(query) ?? false) ||
-          (province['created_by']?.toLowerCase().contains(query) ?? false);
+          (province['created_by']?.toLowerCase().contains(query) ?? false) ||
+          (province['updated_by']?.toLowerCase().contains(query) ?? false);
     }).length;
 
     final totalPages = (totalFiltered / _rowsPerPage).ceil();
@@ -321,7 +384,7 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
   Widget _buildForm() {
     return Center(
       child: SizedBox(
-        width: 600,
+        width: 800,
         child: Card(
           color: Colors.white,
           elevation: 3,
@@ -330,55 +393,38 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
           ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                const Text(
-                  "Add Province",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                Expanded(
+                  child: _textField(_provinceNameController, 'Province Name'),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: _saveProvince,
+                  icon: const Icon(Icons.save),
+                  label: Text(_editingId == null ? 'Save' : 'Update'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _textField(
-                        _provinceNameController,
-                        'Province Name',
-                      ),
+                const SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: _clearForm,
+                  icon: const Icon(Icons.clear),
+                  label: const Text('Reset'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      onPressed: _saveProvince,
-                      icon: const Icon(Icons.save),
-                      label: Text(_editingId == null ? 'Create' : 'Update'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      onPressed: _clearForm,
-                      icon: const Icon(Icons.clear),
-                      label: const Text('Clear'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -400,22 +446,74 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: DataTable(
+              sortColumnIndex: _sortColumnIndex,
+              sortAscending: _sortAscending,
               columnSpacing: 25,
               headingRowColor: MaterialStateProperty.all(
                 const Color(0xffe8f4fd),
               ),
               dataRowMinHeight: 50,
               dataRowMaxHeight: 60,
-              columns: const [
-                DataColumn(label: Text("Actions")),
-                DataColumn(label: Text("ID")),
-                DataColumn(label: Text("Province Name")),
-                DataColumn(label: Text("Created By")),
-                DataColumn(label: Text("Created At")),
-                DataColumn(label: Text("Updated By")),
-                DataColumn(label: Text("Updated At")),
+              columns: [
+                const DataColumn(label: Text("Actions")),
+                DataColumn(
+                  label: const Text("S No"),
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text("Province Name"),
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text("Updated By"),
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text("Created By"),
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text("Updated At"),
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text("Created At"),
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
               ],
-              rows: data.map((province) {
+              rows: data.asMap().entries.map((entry) {
+                final index = entry.key;
+                final province = entry.value;
                 return DataRow(
                   cells: [
                     DataCell(
@@ -434,12 +532,14 @@ class _ProvinceScreenState extends State<ProvinceScreen> {
                         ],
                       ),
                     ),
-                    DataCell(Text(province['id'].toString())),
+                    DataCell(
+                      Text('${_currentPage * _rowsPerPage + index + 1}'),
+                    ),
                     DataCell(Text(province['name'] ?? '')),
-                    DataCell(Text(province['created_by'] ?? '')),
-                    DataCell(Text(province['created_at'] ?? '')),
                     DataCell(Text(province['updated_by'] ?? '')),
-                    DataCell(Text(province['updated_at'] ?? '')),
+                    DataCell(Text(province['created_by'] ?? '')),
+                    DataCell(Text(_formatDate(province['updated_at']))),
+                    DataCell(Text(_formatDate(province['created_at']))),
                   ],
                 );
               }).toList(),

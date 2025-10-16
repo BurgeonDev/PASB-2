@@ -103,7 +103,9 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
     if (isoString == null || isoString.isEmpty) return '';
     try {
       final date = DateTime.parse(isoString);
-      return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+      return "${date.day.toString().padLeft(2, '0')}-"
+          "${date.month.toString().padLeft(2, '0')}-"
+          "${date.year}";
     } catch (e) {
       return isoString;
     }
@@ -228,7 +230,7 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
         child: Column(
           children: [
             _buildForm(),
-            const SizedBox(height: 10),
+            const SizedBox(height: 30),
             Row(
               children: [
                 SizedBox(
@@ -260,13 +262,13 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
                     title: 'Clear Filters',
                   ),
                 ),
-                const SizedBox(width: 10),
+                Spacer(),
                 SizedBox(
                   width: 200,
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: "Search...",
+                      hintText: "Search",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -370,61 +372,69 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
   }
 
   Widget _buildForm() {
-    return Card(
-      color: Colors.white,
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: _textField(_pensionTypeController, 'Pension Type'),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Pension Category',
-                      border: OutlineInputBorder(),
+    return SizedBox(
+      width: 800,
+      child: Card(
+        color: Colors.white,
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: _textField(_pensionTypeController, 'Pension Type'),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    flex: 1,
+                    child: DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        labelText: 'Pension Category',
+                        border: OutlineInputBorder(),
+                      ),
+                      value: _selectedCategory,
+                      items: _categories
+                          .map(
+                            (f) => DropdownMenuItem(value: f, child: Text(f)),
+                          )
+                          .toList(),
+                      onChanged: (val) =>
+                          setState(() => _selectedCategory = val),
                     ),
-                    value: _selectedCategory,
-                    items: _categories
-                        .map((f) => DropdownMenuItem(value: f, child: Text(f)))
-                        .toList(),
-                    onChanged: (val) => setState(() => _selectedCategory = val),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: _savePension,
-                  icon: const Icon(Icons.save),
-                  label: Text(_editingId == null ? 'Save' : 'Update'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
+                  const SizedBox(width: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: _savePension,
+                        icon: const Icon(Icons.save),
+                        label: Text(_editingId == null ? 'Save' : 'Update'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton.icon(
+                        onPressed: _clearForm,
+                        icon: const Icon(Icons.clear),
+                        label: const Text('Reset'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton.icon(
-                  onPressed: _clearForm,
-                  icon: const Icon(Icons.clear),
-                  label: const Text('Reset'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

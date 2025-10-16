@@ -102,6 +102,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
   final TextEditingController milQualController = TextEditingController();
 
   // Dropdown-selected values
+  String? selectedPrefix;
   String? selectedRank;
   String? selectedRegt;
   String? selectedMedCat;
@@ -116,6 +117,19 @@ class _PensionersDataState extends State<PensionersDataScreen> {
   String? selectedSourceVerification;
 
   // Sample lists (replace with your real options)
+
+  final List<String> prefixOptions = [
+    "tt",
+    "PA-",
+    "PSS-",
+    "PJO-",
+    "PTC-",
+    "SR-",
+    "PR-",
+    "pak",
+    "PTC",
+    "NPO-",
+  ];
   final List<String> rankOptions = [
     "Lieutenant",
     "Captain",
@@ -128,18 +142,30 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     "Engineers",
     "Signals",
   ];
-  final List<String> medCatOptions = ["A1", "A2", "B1", "C"];
-  final List<String> characterOptions = ["Excellent", "Good", "Average", "Bad"];
+  final List<String> medCatOptions = ["A", "B", "C", "C (Perm)"];
+  final List<String> characterOptions = [
+    "Exemplary",
+    "Good",
+    "Satisfactory",
+    "UnSatisfactory",
+    "Very Good",
+  ];
   final List<String> pensionTypeOptions = [
     "Service Pension",
     "Disability Pension",
     "Family Pension",
   ];
   final List<String> nokRelationOptions = [
-    "Spouse",
-    "Child",
+    "Son",
+    "Widow",
     "Father",
     "Mother",
+    "Wife",
+    "Sister",
+    "Brother",
+    "Daughter",
+    "Legal Heirs",
+    "More than one Nok",
   ];
   final List<String> ucNameOptions = ["UC-1", "UC-2", "UC-3"];
   final List<String> districtOptions = [
@@ -176,12 +202,20 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     "Chak Jhumra",
   ];
 
-  final List<String> warOpsOptions = ["War", "Operation", "Peace Time"];
-  final List<String> dasbOptions = ["Yes", "No"];
+  final List<String> warOpsOptions = [
+    "1947/48 War",
+    "1965 War",
+    "1971",
+    "Misc",
+    "ISD",
+    "Op AlMizan",
+  ];
+  final List<String> dasbOptions = ["Rawalpindi"];
   final List<String> sourceVerificationOptions = [
-    "Document",
-    "Verbal",
-    "Other",
+    "CMP List",
+    "PAFY-1923",
+    "Visitor",
+    'HWO',
   ];
 
   void _clearForm() {
@@ -273,7 +307,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
   Future<void> _saveDataToDb() async {
     Map<String, dynamic> row = {
       "date_entry": DateTime.now().toIso8601String(),
-      "prefix": prefixController.text,
+      "prefix": selectedPrefix,
       "personal_no": personalNoController.text,
       "rank": selectedRank,
       "trade": tradeController.text,
@@ -381,7 +415,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     Map<String, dynamic> updatedRow = {
       "id": id,
       "date_entry": DateTime.now().toIso8601String(),
-      "prefix": prefixController.text,
+      "prefix": selectedPrefix,
       "personal_no": personalNoController.text,
       "rank": selectedRank,
       "trade": tradeController.text,
@@ -438,7 +472,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     }
     Map<String, String?> data = {
       "Date_Entry": dateEntry,
-      "Prefix": prefixController.text,
+      "Prefix": selectedPrefix,
       "Personal No": personalNoController.text,
       "Rank": selectedRank,
       "Trade": tradeController.text,
@@ -535,7 +569,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
 
     if (widget.pensionData != null) {
       final data = widget.pensionData!;
-      prefixController.text = data["prefix"] ?? '';
+      selectedPrefix = data["prefix"] ?? '';
       personalNoController.text = data["personal_no"] ?? '';
       tradeController.text = data["trade"] ?? '';
       nameController.text = data["name"] ?? '';
@@ -607,10 +641,22 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                           title: "Personal Data",
                           maxHeight: maxHeight,
                           children: [
-                            Textfieldcomponent(
-                              hinttext: "Prefix",
-                              controller: prefixController,
-                              validator: (v) => null,
+                            SizedBox(
+                              width: 340,
+                              child: _buildDropdown(
+                                borderColor: Colors.red,
+                                hintText: "Prefix *",
+                                items: prefixOptions,
+                                value: selectedPrefix,
+                                onChanged: (val) {
+                                  setState(() {
+                                    selectedPrefix = val;
+                                  });
+                                },
+                                validator: (v) => (v == null || v.isEmpty)
+                                    ? "Choose prefix"
+                                    : null,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             Textfieldcomponent(
