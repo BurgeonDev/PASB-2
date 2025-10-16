@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/sqlite/lu_regtcorps_database_Helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class LuRegtCorpsScreen extends StatefulWidget {
   const LuRegtCorpsScreen({super.key});
@@ -39,7 +40,8 @@ class _LuRegtCorpsScreenState extends State<LuRegtCorpsScreen> {
   }
 
   Future<void> _loadData() async {
-    final data = await LuRegtCorpsDatabase.instance.getAllRegtCorps();
+    final data = await AdminDB.instance.fetchAll('Lu_Regt_Corps');
+
     setState(() => _regtCorpsList = data);
   }
 
@@ -59,11 +61,15 @@ class _LuRegtCorpsScreenState extends State<LuRegtCorpsScreen> {
     };
 
     if (_editingId == null) {
-      await LuRegtCorpsDatabase.instance.insertRegtCorps(regtData);
+      // Insert new record into Lu_Regt_Corps table
+      await AdminDB.instance.insertRecord('Lu_Regt_Corps', regtData);
+      print("Inserted new record in Lu_Regt_Corps");
     } else {
-      regtData['id'] = _editingId.toString();
-      regtData['updated_at'] = now;
-      await LuRegtCorpsDatabase.instance.updateRegtCorps(regtData);
+      // Update existing record
+      regtData['id'] = _editingId!.toString();
+      regtData['updated_at'] = DateTime.now().toIso8601String();
+      await AdminDB.instance.updateRecord('Lu_Regt_Corps', regtData);
+      print("Updated record with ID $_editingId in Lu_Regt_Corps");
     }
 
     _clearForm();
@@ -83,7 +89,7 @@ class _LuRegtCorpsScreenState extends State<LuRegtCorpsScreen> {
   }
 
   Future<void> _deleteData(int id) async {
-    await LuRegtCorpsDatabase.instance.deleteRegtCorps(id);
+    await AdminDB.instance.deleteRecord('Lu_Regt_Corps', id);
     _loadData();
   }
 

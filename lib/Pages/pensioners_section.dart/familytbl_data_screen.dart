@@ -4,7 +4,8 @@ import 'package:testing_window_app/components/textfield_component.dart';
 import 'package:testing_window_app/sqlite/familTbl_database_helper.dart';
 import 'package:testing_window_app/sqlite/lupension_database_Helper.dart';
 
-import 'package:testing_window_app/sqlite/user_database_helper.dart'; // for fetching from BasicTbl
+import 'package:testing_window_app/sqlite/user_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart'; // for fetching from BasicTbl
 
 class FamilytblDataScreen extends StatefulWidget {
   final Map<String, dynamic>? nokData;
@@ -200,9 +201,7 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
     if (personalNo.isEmpty) return;
 
     // 1️⃣ Fetch from BasicTbl
-    final record = await DatabaseHelper2.instance.getRecordByPersonalNo(
-      personalNo,
-    );
+    final record = await AdminDB.instance.getRecordByPersonalNo(personalNo);
 
     // 2️⃣ Fetch type of pension from LuPension
     final pensions = await LuPensionDatabase.instance.getAllPensions();

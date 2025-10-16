@@ -9,6 +9,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:testing_window_app/Pages/pensioners_section.dart/pensioners_data_screen.dart';
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class ListOfPensionersScreen extends StatefulWidget {
   final Function(Map<String, dynamic>)? onEditPensioner;
@@ -140,7 +141,7 @@ class _ListOfPensionersScreenState extends State<ListOfPensionersScreen> {
 
   Future<void> _loadData() async {
     try {
-      final data = await DatabaseHelper2.instance.getAll();
+      final data = await AdminDB.instance.fetchAllWithJoins();
 
       final Map<String, List<String>> options = {};
       for (var key in _selectedFilters.keys) {
@@ -284,7 +285,7 @@ class _ListOfPensionersScreenState extends State<ListOfPensionersScreen> {
   }
 
   Future<void> _deleteRow(int id) async {
-    await DatabaseHelper2.instance.delete(id);
+    await AdminDB.instance.deleteRecord('basictbl', id);
 
     await _loadData();
   }

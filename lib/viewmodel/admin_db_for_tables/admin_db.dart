@@ -9,12 +9,14 @@ class AdminDB {
 
   AdminDB._init();
 
+  // Get database
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDB('admin_data.db');
     return _database!;
   }
 
+  // Initialize DB
   Future<Database> _initDB(String filePath) async {
     Directory directory;
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
@@ -26,10 +28,18 @@ class AdminDB {
     }
 
     final path = join(directory.path, filePath);
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    print('Database path: $path');
+
+    return await openDatabase(
+      path,
+      version: 3, // increment when adding new tables
+      onCreate: _createDB,
+    );
   }
 
+  // CREATE ALL TABLES
   Future _createDB(Database db, int version) async {
+    // ✅ Province Table
     await db.execute('''
       CREATE TABLE province(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,6 +51,7 @@ class AdminDB {
       )
     ''');
 
+    // ✅ Directorate Table
     await db.execute('''
       CREATE TABLE directorate(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,6 +65,7 @@ class AdminDB {
       )
     ''');
 
+    // ✅ DASB Table
     await db.execute('''
       CREATE TABLE dasb(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,6 +81,7 @@ class AdminDB {
       )
     ''');
 
+    // ✅ District Table
     await db.execute('''
       CREATE TABLE district(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,7 +95,7 @@ class AdminDB {
       )
     ''');
 
-    // ✅ TEHSIL TABLE
+    // ✅ Tehsil Table
     await db.execute('''
       CREATE TABLE tehsil (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -93,59 +106,232 @@ class AdminDB {
         FOREIGN KEY (district_id) REFERENCES district (id) ON DELETE CASCADE
       );
     ''');
+
+    // ✅ UC Table
     await db.execute('''
-  CREATE TABLE IF NOT EXISTS uc (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tehsil_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    created_at TEXT,
-    updated_at TEXT,
-    FOREIGN KEY (tehsil_id) REFERENCES tehsil (id)
-  );
-''');
+      CREATE TABLE uc (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tehsil_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        created_at TEXT,
+        updated_at TEXT,
+        FOREIGN KEY (tehsil_id) REFERENCES tehsil (id)
+      );
+    ''');
+
+    // ✅ Lu_Regt_Corps Table
+    await db.execute('''
+      CREATE TABLE Lu_Regt_Corps (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        force TEXT NOT NULL,
+        regtcorps TEXT NOT NULL,
+        rw_phone TEXT,
+        rw_address TEXT,
+        rw_address_urdu TEXT,
+        regt_urdu TEXT,
+        created_by TEXT,
+        created_at TEXT,
+        updated_by TEXT,
+        updated_at TEXT
+      )
+    ''');
+
+    // // ✅ NEW — Rank Table
+    await db.execute('''
+      CREATE TABLE rank (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        rank TEXT NOT NULL,
+        acronym TEXT,
+        forces TEXT NOT NULL,
+        rank_category TEXT NOT NULL,
+        rank_urdu TEXT,
+        created_by TEXT,
+        created_at TEXT,
+        updated_by TEXT,
+        updated_at TEXT
+      )
+    ''');
+
+    // ✅ BasicTbl Table (linked to Lu_Regt_Corps)
+    await db.execute('''
+      CREATE TABLE basictbl (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date_entry TEXT,
+        prefix TEXT,
+        personal_no TEXT,
+        rank TEXT,
+        trade TEXT,
+        name TEXT,
+        regt TEXT,
+        type_of_pension TEXT,
+        parent_unit TEXT,
+        nok_name TEXT,
+        nok_relation TEXT,
+        village TEXT,
+        post_office TEXT,
+        uc_name TEXT,
+        tehsil TEXT,
+        district TEXT,
+        present_addr TEXT,
+        mobile TEXT,
+        honours TEXT,
+        war_ops TEXT,
+        civil_edn TEXT,
+        mil_qual TEXT,
+        med_cat TEXT,
+        dob TEXT,
+        do_enlt TEXT,
+        do_disch TEXT,
+        cause_disch TEXT,
+        do_death TEXT,
+        cause_death TEXT,
+        character TEXT,
+        cl_disability TEXT,
+        do_disability TEXT,
+        nature_disability TEXT,
+        cause_disability TEXT,
+        cnic TEXT,
+        cmp_cnic_no TEXT,
+        id_marks TEXT,
+        railway_station TEXT,
+        police_station TEXT,
+        place_death TEXT,
+        citation_shaheed TEXT,
+        loc_graveyard TEXT,
+        tomb_stone TEXT,
+        father_name TEXT,
+        gpo TEXT,
+        pdo TEXT,
+        psb_no TEXT,
+        ppo_no TEXT,
+        bank_name TEXT,
+        bank_branch TEXT,
+        bank_acct_no TEXT,
+        iban_no TEXT,
+        nok_cnic TEXT,
+        nok_do_birth TEXT,
+        nok_id_mks TEXT,
+        nok_gpo TEXT,
+        nok_pdo TEXT,
+        nok_psb_no TEXT,
+        nok_ppo_no TEXT,
+        nok_bank_name TEXT,
+        nok_bank_branch TEXT,
+        nok_bank_acct_no TEXT,
+        nok_iban_no TEXT,
+        net_pension TEXT,
+        nok_net_pension TEXT,
+        register_page TEXT,
+        shaheed_remarks TEXT,
+        disable_remarks TEXT,
+        gen_remarks TEXT,
+        dasb TEXT,
+        date_verification TEXT,
+        source_verification TEXT,
+        created_at TEXT,
+      updated_at TEXT,
+      created_by   TEXT,
+      updated_by TEXT,
+        dcs_start_month TEXT,
+        last_modified_by TEXT,
+        last_modified_date TEXT,
+        regtcorps_id INTEGER,
+        FOREIGN KEY (regtcorps_id) REFERENCES Lu_Regt_Corps(id) ON DELETE SET NULL
+      )
+    ''');
   }
 
-  // ✅ Insert a new record
+  // ✅ Insert Record
   Future<int> insertRecord(String table, Map<String, dynamic> data) async {
     final db = await instance.database;
+    data['created_at'] ??= DateTime.now().toIso8601String();
     return await db.insert(table, data);
   }
 
-  // ✅ Fetch all records from a table
+  // ✅ Fetch All
   Future<List<Map<String, dynamic>>> fetchAll(String table) async {
     final db = await instance.database;
-    return await db.query(table);
+    return await db.query(table, orderBy: 'id DESC');
   }
 
-  // ✅ Fetch records with WHERE condition
+  Future<List<Map<String, dynamic>>> fetchAllWithRegtCorps() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('''
+    SELECT b.*, r.regtcorps AS regt
+    FROM basictbl b
+    LEFT JOIN Lu_Regt_Corps r
+    ON b.regt = r.id
+    ORDER BY b.id DESC
+  ''');
+    return result;
+  }
+
+  // ✅ Fetch records using a WHERE clause
   Future<List<Map<String, dynamic>>> fetchWhere(
     String table,
     String whereClause,
     List<dynamic> whereArgs,
   ) async {
     final db = await instance.database;
-    return await db.query(table, where: whereClause, whereArgs: whereArgs);
+    return await db.query(
+      table,
+      where: whereClause,
+      whereArgs: whereArgs,
+      orderBy: 'id DESC',
+    );
   }
 
-  // ✅ Update record
+  // ✅ Update
   Future<int> updateRecord(String table, Map<String, dynamic> data) async {
     final db = await instance.database;
-    if (!data.containsKey('id')) {
-      throw ArgumentError('Missing "id" in data for updateRecord');
-    }
-
     final id = data['id'];
-    data.remove('id'); // remove id from data to avoid overwriting
+    data['updated_at'] = DateTime.now().toIso8601String();
+    data.remove('id');
     return await db.update(table, data, where: 'id = ?', whereArgs: [id]);
   }
 
-  // ✅ Delete record by id
+  // ✅ Delete
   Future<int> deleteRecord(String table, int id) async {
     final db = await instance.database;
     return await db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
-  // ✅ Close database
+  // ---------------- GET BY PERSONAL NO ----------------
+  Future<Map<String, dynamic>?> getRecordByPersonalNo(String personalNo) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'basictbl',
+      where: 'personal_no = ?',
+      whereArgs: [personalNo],
+      limit: 1,
+    );
+    return result.isNotEmpty ? result.first : null;
+  }
+
+  // ---------------- GET SHUHADA ----------------
+  Future<List<Map<String, dynamic>>> getShuhada() async {
+    final db = await instance.database;
+    return await db.query(
+      'basictbl',
+      where: "do_death IS NOT NULL AND do_death != ''",
+      orderBy: "id DESC",
+    );
+  }
+
+  // ---------------- GET DISABLED ----------------
+  Future<List<Map<String, dynamic>>> getDisabled() async {
+    final db = await instance.database;
+    return await db.query(
+      'basictbl',
+      where: """
+        (do_disability IS NOT NULL AND do_disability != '')
+        OR (nature_disability IS NOT NULL AND nature_disability != '')
+      """,
+      orderBy: "id DESC",
+    );
+  }
+
+  // ✅ Close
   Future close() async {
     final db = await instance.database;
     db.close();

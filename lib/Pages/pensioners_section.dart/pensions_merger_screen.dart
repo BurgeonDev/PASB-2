@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:testing_window_app/components/textfield_component.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
 import 'package:testing_window_app/utils/pdf_fill_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class PensionMergerFormScreen extends StatefulWidget {
   final Map<String, dynamic>? pensionData;
@@ -131,7 +132,7 @@ class _PensionMergerFormScreenState extends State<PensionMergerFormScreen> {
   }
 
   Future<void> _fetchBasicData(String armyNo) async {
-    final data = await DatabaseHelper2.instance.getRecordByPersonalNo(armyNo);
+    final data = await AdminDB.instance.getRecordByPersonalNo(armyNo);
 
     if (data != null) {
       setState(() {

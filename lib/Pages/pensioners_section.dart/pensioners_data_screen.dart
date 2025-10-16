@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:testing_window_app/components/textfield_component.dart';
 import 'package:testing_window_app/components/toast_message.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class PensionersDataScreen extends StatefulWidget {
   final Map<String, dynamic>? pensionData;
@@ -104,7 +105,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
   // Dropdown-selected values
   String? selectedPrefix;
   String? selectedRank;
-  String? selectedRegt;
+  int? selectedRegtId;
   String? selectedMedCat;
   String? selectedCharacter;
   String? selectedTypeOfPension;
@@ -136,12 +137,32 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     "Major",
     "Colonel",
   ];
-  final List<String> regtOptions = [
-    "Infantry",
-    "Artillery",
-    "Engineers",
-    "Signals",
-  ];
+  List<Map<String, dynamic>> regtCorpsList = [];
+
+  Future<void> loadRegtCorps() async {
+    try {
+      // Use your unified database instance
+      final db = await AdminDB.instance.database;
+
+      // Debug: Check which tables exist
+      var tables = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table'",
+      );
+      print("Tables in DB: $tables");
+
+      // ✅ Load the data from Lu_Regt_Corps
+      final data = await AdminDB.instance.fetchAll('Lu_Regt_Corps');
+
+      setState(() {
+        regtCorpsList = data;
+      });
+
+      print("✅ Lu_Regt_Corps data loaded successfully: $regtCorpsList");
+    } catch (e) {
+      print("❌ Error fetching Lu_Regt_Corps: $e");
+    }
+  }
+
   final List<String> medCatOptions = ["A", "B", "C", "C (Perm)"];
   final List<String> characterOptions = [
     "Exemplary",
@@ -250,7 +271,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
 
     setState(() {
       selectedRank = null;
-      selectedRegt = null;
+      selectedRegtId = null;
       selectedMedCat = null;
       selectedCharacter = null;
       selectedTypeOfPension = null;
@@ -312,7 +333,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "rank": selectedRank,
       "trade": tradeController.text,
       "name": nameController.text,
-      "regt": selectedRegt,
+      "regt": selectedRegtId,
       "parent_unit": parentUnitController.text,
       "father_name": fatherNameController.text,
       "dob": dobController.text,
@@ -386,9 +407,9 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     };
 
     try {
-      final db = await DatabaseHelper2.instance.database;
+      final db = await AdminDB.instance.database;
 
-      int id = await DatabaseHelper2.instance.insert(row);
+      int id = await AdminDB.instance.insertRecord('basictbl', row);
       print("Inserted row id: $id");
     } catch (error) {
       print("Error inserting row: $error");
@@ -420,7 +441,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "rank": selectedRank,
       "trade": tradeController.text,
       "name": nameController.text,
-      "regt": selectedRegt,
+      "regt": selectedRegtId,
       "parent_unit": parentUnitController.text,
       "father_name": fatherNameController.text,
       "dob": dobController.text,
@@ -458,7 +479,8 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     };
 
     try {
-      await DatabaseHelper2.instance.update(updatedRow);
+      await AdminDB.instance.updateRecord('basictbl', updatedRow);
+
       print("Updated record with ID: $id");
     } catch (error) {
       print("Error updating record: $error");
@@ -477,7 +499,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "Rank": selectedRank,
       "Trade": tradeController.text,
       "Name": nameController.text,
-      "Regt/Corps": selectedRegt,
+      "Regt/Corps": selectedRegtId.toString(),
       "Parent Unit": parentUnitController.text,
       "Father Name": fatherNameController.text,
       "DOB": dobController.text,
@@ -566,7 +588,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
   @override
   void initState() {
     super.initState();
-
+    loadRegtCorps();
     if (widget.pensionData != null) {
       final data = widget.pensionData!;
       selectedPrefix = data["prefix"] ?? '';
@@ -600,7 +622,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
 
       // Dropdown values
       selectedRank = data["rank"];
-      selectedRegt = data["regt"];
+      selectedRegtId = data["regt"];
       selectedMedCat = data["med_cat"];
       selectedCharacter = data["character"];
       selectedTypeOfPension = data["type_of_pension"];
@@ -701,21 +723,45 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                             const SizedBox(height: 8),
                             SizedBox(
                               width: 340,
-                              child: _buildDropdown(
-                                borderColor: Colors.red,
-                                hintText: "Regt/Corps *",
-                                items: regtOptions,
-                                value: selectedRegt,
+                              child: DropdownButtonFormField<int>(
+                                value: selectedRegtId,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: "Regt/Corps *",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                items: regtCorpsList.map<DropdownMenuItem<int>>(
+                                  (regt) {
+                                    return DropdownMenuItem<int>(
+                                      value:
+                                          regt['id']
+                                              as int, // ensure it's an int
+                                      child: Text(
+                                        regt['regtcorps'] ??
+                                            '', // wrap in Text widget
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                    );
+                                  },
+                                ).toList(),
                                 onChanged: (val) {
                                   setState(() {
-                                    selectedRegt = val;
+                                    selectedRegtId =
+                                        val; // update the selected ID
                                   });
                                 },
-                                validator: (v) => (v == null || v.isEmpty)
-                                    ? "Choose unit"
-                                    : null,
+                                validator: (v) =>
+                                    (v == null) ? "Choose unit" : null,
                               ),
                             ),
+
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "Parent Unit",

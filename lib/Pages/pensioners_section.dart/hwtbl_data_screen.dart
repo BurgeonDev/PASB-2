@@ -3,6 +3,7 @@ import 'package:testing_window_app/components/textfield_component.dart';
 
 import 'package:testing_window_app/sqlite/hwtbl_database_helper.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class HWDataScreen extends StatefulWidget {
   final Map<String, dynamic>? hwData;
@@ -83,9 +84,7 @@ class _HWDataScreenState extends State<HWDataScreen> {
   Future<void> _fetchFromBasicTbl(String personalNo) async {
     if (personalNo.isEmpty) return;
 
-    final record = await DatabaseHelper2.instance.getRecordByPersonalNo(
-      personalNo,
-    );
+    final record = await AdminDB.instance.getRecordByPersonalNo(personalNo);
 
     if (!mounted) return;
 

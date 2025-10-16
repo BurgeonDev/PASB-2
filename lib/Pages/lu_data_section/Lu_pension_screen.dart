@@ -292,6 +292,7 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
               ],
             ),
             const SizedBox(height: 10),
+
             Expanded(child: _buildDataTable(filtered)),
           ],
         ),

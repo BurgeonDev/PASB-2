@@ -7,6 +7,7 @@ import 'package:pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class ListOfShuhada extends StatefulWidget {
   const ListOfShuhada({super.key});
@@ -228,7 +229,7 @@ class _ListOfShuhadaState extends State<ListOfShuhada> {
 
   Future<void> _loadData() async {
     try {
-      final shuhada = await DatabaseHelper2.instance.getShuhada();
+      final shuhada = await AdminDB.instance.getShuhada();
 
       final Map<String, List<String>> options = {};
       for (var key in _selectedFilters.keys) {
@@ -255,7 +256,7 @@ class _ListOfShuhadaState extends State<ListOfShuhada> {
   }
 
   Future<void> _deleteRow(int id) async {
-    await DatabaseHelper2.instance.delete(id);
+    await AdminDB.instance.deleteRecord('basictbl', id);
     await _loadData();
   }
 

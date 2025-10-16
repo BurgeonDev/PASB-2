@@ -285,7 +285,6 @@ class _HomeScreenState extends State<MenuScreen> {
       PopupMenuItem<int>(value: 22, child: Text("Location")),
       PopupMenuItem<int>(value: 15, child: Text("Pension Type")),
       PopupMenuItem<int>(value: 14, child: Text("Rank")),
-
       PopupMenuItem<int>(value: 16, child: Text("RegtCorps")),
     ]);
   }

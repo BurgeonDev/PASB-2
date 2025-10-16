@@ -4,6 +4,7 @@ import 'package:testing_window_app/components/textfield_component.dart';
 
 import 'package:testing_window_app/sqlite/benTbl_database_helper.dart';
 import 'package:testing_window_app/sqlite/user_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class BenDataScreen extends StatefulWidget {
   final Map<String, dynamic>? benData;
@@ -121,9 +122,7 @@ class _BenDataScreenState extends State<BenDataScreen> {
     if (personalNo.isEmpty) return;
 
     print('Fetching record for Personal No: $personalNo');
-    final record = await DatabaseHelper2.instance.getRecordByPersonalNo(
-      personalNo,
-    );
+    final record = await AdminDB.instance.getRecordByPersonalNo(personalNo);
 
     print('Record result: $record');
 

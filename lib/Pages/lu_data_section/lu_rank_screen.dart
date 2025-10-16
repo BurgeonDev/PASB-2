@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/sqlite/lurank_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class LuRankScreen extends StatefulWidget {
   const LuRankScreen({super.key});
@@ -42,7 +43,7 @@ class _LuRankScreenState extends State<LuRankScreen> {
   }
 
   Future<void> _loadRanks() async {
-    final data = await RankDatabase.instance.getAllRanks();
+    final data = await AdminDB.instance.fetchAll('rank');
     setState(() {
       _rankList = data;
     });
@@ -63,11 +64,11 @@ class _LuRankScreenState extends State<LuRankScreen> {
     };
 
     if (_editingId == null) {
-      await RankDatabase.instance.insertRank(rankData);
+      await AdminDB.instance.insertRecord('rank', rankData);
     } else {
       rankData['id'] = _editingId!.toString();
       rankData['updated_at'] = now;
-      await RankDatabase.instance.updateRank(rankData);
+      await AdminDB.instance.insertRecord('rank', rankData);
     }
 
     _clearForm();
@@ -88,7 +89,7 @@ class _LuRankScreenState extends State<LuRankScreen> {
   }
 
   Future<void> _deleteRank(int id) async {
-    await RankDatabase.instance.deleteRank(id);
+    await AdminDB.instance.deleteRecord('rank', id);
     _loadRanks();
   }
 
