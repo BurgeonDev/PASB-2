@@ -119,9 +119,9 @@ class _HWDataScreenState extends State<HWDataScreen> {
 
     try {
       if (widget.hwData == null) {
-        await HWDB.instance.insertHW(hwData);
+        await AdminDB.instance.insertRecord('HWO', hwData);
       } else {
-        await HWDB.instance.updateHW(widget.hwData!['HWID'], hwData);
+        await AdminDB.instance.updateRecord(widget.hwData!['HWID'], hwData);
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

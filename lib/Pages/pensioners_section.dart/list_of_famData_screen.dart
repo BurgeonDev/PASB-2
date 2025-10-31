@@ -7,6 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/sqlite/familTbl_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class ListOfFamilyDataScreen extends StatefulWidget {
   const ListOfFamilyDataScreen({super.key});
@@ -62,7 +63,7 @@ class _ListOfFamilyDataScreenState extends State<ListOfFamilyDataScreen> {
 
   Future<void> _loadData() async {
     try {
-      final data = await FamilyDB.instance.getAllNOKs();
+      final data = await AdminDB.instance.fetchAll('FamilyTbl');
       setState(() {
         _rows = data;
         _applyFilters();
@@ -88,7 +89,7 @@ class _ListOfFamilyDataScreenState extends State<ListOfFamilyDataScreen> {
   }
 
   Future<void> _deleteRow(int id) async {
-    await FamilyDB.instance.deleteNOK(id);
+    await AdminDB.instance.deleteRecord('FamilyTbl', id);
     _loadData();
   }
 

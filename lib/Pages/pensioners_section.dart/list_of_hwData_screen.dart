@@ -8,6 +8,7 @@ import 'package:pdf/pdf.dart';
 import 'package:testing_window_app/components/button_component.dart';
 
 import 'package:testing_window_app/sqlite/hwtbl_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class ListOfHWDataScreen extends StatefulWidget {
   const ListOfHWDataScreen({super.key});
@@ -57,7 +58,7 @@ class _ListOfHWDataScreenState extends State<ListOfHWDataScreen> {
 
   Future<void> _loadData() async {
     try {
-      final data = await HWDB.instance.getAllHWs();
+      final data = await AdminDB.instance.fetchAll('HWO');
       setState(() {
         _rows = data;
         _applyFilters();
@@ -83,7 +84,7 @@ class _ListOfHWDataScreenState extends State<ListOfHWDataScreen> {
   }
 
   Future<void> _deleteRow(int id) async {
-    await HWDB.instance.deleteHW(id);
+    await AdminDB.instance.deleteRecord('HWO', id);
     _loadData();
   }
 

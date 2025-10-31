@@ -32,7 +32,7 @@ class AdminDB {
 
     return await openDatabase(
       path,
-      version: 3, // increment when adding new tables
+      version: 4, // increment when adding new tables
       onCreate: _createDB,
     );
   }
@@ -313,6 +313,7 @@ bank_id INTEGER,
       )
     ''');
 
+    // pension claims
     await db.execute('''
       CREATE TABLE pension_claims(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -328,6 +329,51 @@ bank_id INTEGER,
         uploadedFilePath TEXT
       )
     ''');
+
+    // HWO table
+    await db.execute('''
+    CREATE TABLE HWO(
+      HWID INTEGER PRIMARY KEY AUTOINCREMENT,
+      HWPersNo INTEGER NOT NULL,
+      DOAppt TEXT,
+      ExtnUpto TEXT,
+      DORelq TEXT,
+      CauseOfRelq TEXT,
+      AOR TEXT,
+      Checked TEXT,
+      PageNo TEXT,
+      HWRemarks TEXT,
+      Pic TEXT,
+      AccountNo INTEGER,
+       created_at TEXT,
+      FOREIGN KEY (HWPersNo) REFERENCES basictbl(id) ON DELETE CASCADE
+    )
+  ''');
+
+    // ✅ Ben Table (Added)
+
+    await db.execute('''
+      CREATE TABLE Bentbl(
+        BenID INTEGER PRIMARY KEY AUTOINCREMENT,
+        BenPersNo TEXT,
+        BenBankerName TEXT,
+        BenBranchCode TEXT,
+        BenBankAcctNo TEXT,
+        BenBankIBANNo TEXT,
+        BenRemarks TEXT,
+        AmountReceived TEXT,
+        AmountReceivedDate TEXT,
+        MaritalStatus TEXT,
+        DASBFileNo TEXT,
+        BenOriginator TEXT,
+        BenOriginatorLtrDate TEXT,
+        BenOriginatorLtrNo TEXT,
+        CaseReceivedForVerification TEXT,
+        BenStatus TEXT,
+        HWOConcerned TEXT,
+        created_at TEXT
+      )
+    ''');
   }
 
   // ✅ Insert Record
@@ -338,9 +384,17 @@ bank_id INTEGER,
   }
 
   // ✅ Fetch All
+  // ✅ Fetch All (fixed for all tables)
   Future<List<Map<String, dynamic>>> fetchAll(String table) async {
     final db = await instance.database;
-    return await db.query(table, orderBy: 'id DESC');
+
+    // Handle custom ID column names per table
+    String idColumn = 'id';
+    if (table == 'Bentbl') idColumn = 'BenID';
+    if (table == 'FamilyTbl') idColumn = 'NOKID';
+    if (table == 'HWO') idColumn = 'HWID';
+
+    return await db.query(table, orderBy: '$idColumn DESC');
   }
 
   Future<List<Map<String, dynamic>>> fetchAllWithJoins() async {
@@ -351,7 +405,7 @@ bank_id INTEGER,
            r.regtcorps AS regt_name,
            rk.rank AS rank_name
     FROM basictbl b
-    LEFT JOIN Lu_Regt_Corps r ON b.regt_id = r.id
+    LEFT JOIN Lu_Regt_Corps r ON b.regtcorps_id = r.id
     LEFT JOIN rank rk ON b.rank_id = rk.id
     ORDER BY b.id DESC
   ''');

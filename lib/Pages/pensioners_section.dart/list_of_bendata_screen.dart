@@ -7,6 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/sqlite/benTbl_database_helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class ListOfBenDataScreen extends StatefulWidget {
   const ListOfBenDataScreen({super.key});
@@ -64,7 +65,7 @@ class _ListOfBenDataScreenState extends State<ListOfBenDataScreen> {
 
   Future<void> _loadData() async {
     try {
-      final data = await BenDB.instance.getAllBens();
+      final data = await AdminDB.instance.fetchAll('Bentbl');
       setState(() {
         _rows = data;
         _applyFilters();
@@ -91,7 +92,7 @@ class _ListOfBenDataScreenState extends State<ListOfBenDataScreen> {
   }
 
   Future<void> _deleteRow(int id) async {
-    await BenDB.instance.delete(id);
+    await AdminDB.instance.deleteRecord('Bentbl', id);
     _loadData();
   }
 

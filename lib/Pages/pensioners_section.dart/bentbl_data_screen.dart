@@ -169,10 +169,10 @@ class _BenDataScreenState extends State<BenDataScreen> {
 
     try {
       if (widget.benData == null) {
-        await BenDB.instance.insertBen(benData);
+        await AdminDB.instance.insertRecord('Bentbl', benData);
         print('Record added successfully');
       } else {
-        await BenDB.instance.updateBen(widget.benData!['BenID'], benData);
+        await AdminDB.instance.updateRecord('Bentbl', widget.benData!['BenID']);
         print('Record updated successfully');
       }
       if (!mounted) return;

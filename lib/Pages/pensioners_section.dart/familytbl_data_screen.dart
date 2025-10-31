@@ -283,10 +283,10 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
 
     try {
       if (widget.nokData == null) {
-        await FamilyDB.instance.insertNOK(nokData);
+        await AdminDB.instance.insertRecord('FamilyTbl', nokData);
         print('NOK record added successfully');
       } else {
-        await FamilyDB.instance.updateNOK(widget.nokData!['NOKID'], nokData);
+        await AdminDB.instance.updateRecord(widget.nokData!['NOKID'], nokData);
         print('NOK record updated successfully');
       }
     } catch (e) {
@@ -294,6 +294,53 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error saving NOK record: $e')));
+    }
+  }
+
+  Future<void> _fetchFromBasicTbl(String personalNo) async {
+    if (personalNo.isEmpty) {
+      showToast("Please enter a Personal No first");
+      return;
+    }
+
+    try {
+      // Fetch the record from basictbl
+      final record = await AdminDB.instance.getRecordByPersonalNo(personalNo);
+
+      if (!mounted) return;
+
+      if (record != null) {
+        setState(() {
+          _nokNameController.text = record['nok_name'] ?? '';
+          _nokRelationController.text = record['nok_relation'] ?? '';
+          _nokCnicController.text = record['nok_cnic'] ?? '';
+          _nokDoBirthController.text = record['nok_do_birth'] ?? '';
+          _nokIdMksController.text = record['nok_id_mks'] ?? '';
+          _nokPsbNoController.text = record['nok_psb_no'] ?? '';
+          _nokPpoNoController.text = record['nok_ppo_no'] ?? '';
+          _nokGpoController.text = record['nok_gpo'] ?? '';
+          _nokPdoController.text = record['nok_pdo'] ?? '';
+          _nokBankNameController.text = record['nok_bank_name'] ?? '';
+          _nokBankBranchController.text = record['nok_bank_branch'] ?? '';
+          _nokBankAcctNoController.text = record['nok_bank_acct_no'] ?? '';
+          _nokIbanNoController.text = record['nok_iban_no'] ?? '';
+          _nokNetPensionController.text =
+              record['nok_net_pension']?.toString() ?? '';
+          _nokDoDeathController.text = record['do_death'] ?? '';
+
+          // If you have pension type stored in basictbl
+          _nokTypeOfPensionController.text =
+              record['nok_type_of_pension'] ?? '';
+          _selectedPensionType = record['nok_type_of_pension'];
+        });
+
+        showToast("Data fetched successfully from BasicTbl");
+      } else {
+        showToast("No record found for PersNo: $personalNo");
+      }
+    } catch (e) {
+      showToast("Error fetching data: $e");
+      print("❌ Error in _fetchFromBasicTbl: $e");
     }
   }
 
@@ -334,11 +381,11 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
                 spacing: 16,
                 runSpacing: 8,
                 children: [
-                  // _buildTextField(
-                  //   "PersNo",
-                  //   _persNoController,
-                  //   onSubmitted: (value) => _fetchFromBasicTbl(value),
-                  // ),
+                  _buildTextField(
+                    "PersNo",
+                    _persNoController,
+                    onSubmitted: (value) => _fetchFromBasicTbl(value),
+                  ),
                   _buildTextField("NOK Name", _nokNameController),
                   _buildTextField("NOK Relation", _nokRelationController),
                   SizedBox(
