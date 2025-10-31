@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:testing_window_app/components/toast_message.dart';
 import 'package:testing_window_app/sqlite/pansion_claims_db.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class SendPensionClaimScreen extends StatefulWidget {
   const SendPensionClaimScreen({super.key});
@@ -98,7 +99,7 @@ class _SendPensionClaimScreenState extends State<SendPensionClaimScreen> {
       };
       print('calim body ---> ${claim.toString()}');
 
-      await PensionClaimsDB.instance.insertClaim(claim);
+      await AdminDB.instance.insertRecord('pension_claims', claim);
       ToastMessage.showSuccess(context, 'Claim submitted successfully!');
 
       _formKey.currentState!.reset();

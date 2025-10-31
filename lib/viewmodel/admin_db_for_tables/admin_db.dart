@@ -152,6 +152,71 @@ class AdminDB {
       )
     ''');
 
+    // ✅ LU_BANK Table
+    await db.execute('''
+  CREATE TABLE lu_bank(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    abbreviation TEXT NOT NULL,
+    created_by TEXT,
+    created_at TEXT,
+    updated_by TEXT,
+    updated_at TEXT
+  )
+''');
+
+    // ✅ LU_PENSION Table
+    await db.execute('''
+  CREATE TABLE Lu_Pension (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Pension_Type TEXT NOT NULL,
+    Pension_Category TEXT NOT NULL,
+    created_by TEXT,
+    created_at TEXT,
+    updated_by TEXT,
+    updated_at TEXT
+  )
+''');
+
+    // ✅ FamilyTbl (linked to BasicTbl.id)
+    await db.execute('''
+      CREATE TABLE FamilyTbl(
+        NOKID INTEGER PRIMARY KEY AUTOINCREMENT,
+        PersId INTEGER NOT NULL,
+        NOKName TEXT,
+        NOKRelation TEXT,
+        NOKDOB TEXT,
+        NOKDOD TEXT,
+        NOKDOM TEXT,
+        NOKEdn TEXT,
+        NOKProfession TEXT,
+        NOKMaritialStatus TEXT,
+        NOKDisability TEXT,
+        NOKCNIC TEXT,
+        NOKIDMks TEXT,
+        NOKMobileNo TEXT,
+        NOKSourceOfIncome TEXT,
+        NOKMonthlyIncome INTEGER,
+        NOKDODivorced TEXT,
+        AmountChildrenAllce INTEGER,
+        DOChildrenAllce TEXT,
+        NOKRemarks TEXT,
+        NOKPSBNo TEXT,
+        NOKPPONo TEXT,
+        NOKGPO TEXT,
+        NOKPDO TEXT,
+        NOKNetPension INTEGER,
+        NOKBankName TEXT,
+        NOKBankBranch TEXT,
+        NOKBankCode TEXT,
+        NOKBankAcctNo TEXT,
+        NOKIBANNo TEXT,
+        DCSStartMonth TEXT,
+        NOKTypeOfPension TEXT,
+        FOREIGN KEY (PersId) REFERENCES basictbl(id) ON DELETE CASCADE
+      )
+    ''');
+
     // ✅ BasicTbl Table (linked to Lu_Regt_Corps)
     await db.execute('''
       CREATE TABLE basictbl (
@@ -236,7 +301,31 @@ class AdminDB {
         last_modified_by TEXT,
         last_modified_date TEXT,
         regtcorps_id INTEGER,
-        FOREIGN KEY (regtcorps_id) REFERENCES Lu_Regt_Corps(id) ON DELETE SET NULL
+        rank_id INTEGER,
+        pension_id INTEGER,
+
+bank_id INTEGER,
+        FOREIGN KEY (regtcorps_id) REFERENCES Lu_Regt_Corps(id) ON DELETE SET NULL,
+          FOREIGN KEY (rank_id) REFERENCES rank(id) ON DELETE SET NULL,
+           FOREIGN KEY (bank_id) REFERENCES lu_bank(id) ON DELETE SET NULL,
+           FOREIGN KEY (pension_id) REFERENCES Lu_Pension(id) ON DELETE SET NULL
+
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE pension_claims(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        fromPerson TEXT,
+        toPerson TEXT,
+        pensionId TEXT,
+        pensionNumber TEXT,
+        claimant TEXT,
+        relation TEXT,
+        date TEXT,
+        message TEXT,
+        uploadedFileName TEXT,
+        uploadedFilePath TEXT
       )
     ''');
   }
@@ -254,13 +343,16 @@ class AdminDB {
     return await db.query(table, orderBy: 'id DESC');
   }
 
-  Future<List<Map<String, dynamic>>> fetchAllWithRegtCorps() async {
+  Future<List<Map<String, dynamic>>> fetchAllWithJoins() async {
     final db = await instance.database;
+
     final result = await db.rawQuery('''
-    SELECT b.*, r.regtcorps AS regt
+    SELECT b.*, 
+           r.regtcorps AS regt_name,
+           rk.rank AS rank_name
     FROM basictbl b
-    LEFT JOIN Lu_Regt_Corps r
-    ON b.regt = r.id
+    LEFT JOIN Lu_Regt_Corps r ON b.regt_id = r.id
+    LEFT JOIN rank rk ON b.rank_id = rk.id
     ORDER BY b.id DESC
   ''');
     return result;

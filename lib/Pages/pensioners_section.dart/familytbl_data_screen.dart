@@ -66,19 +66,19 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
   final TextEditingController _nokTypeOfPensionController =
       TextEditingController();
 
-  Future<void> _loadPensionTypes() async {
-    final pensions = await LuPensionDatabase.instance.getAllPensions();
-    if (!mounted) return;
+  // Future<void> _loadPensionTypes() async {
+  //   final pensions = await LuPensionDatabase.instance.getAllPensions();
+  //   if (!mounted) return;
 
-    setState(() {
-      _pensionTypes = pensions.map((e) => e['Pension_Type'] as String).toList();
-    });
-  }
+  //   setState(() {
+  //     _pensionTypes = pensions.map((e) => e['Pension_Type'] as String).toList();
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
-    _loadPensionTypes(); // fetch types from LuPension
+    // _loadPensionTypes(); // fetch types from LuPension
     if (widget.nokData != null) {
       _persNoController.text = widget.nokData!['PersNo'] ?? '';
       _nokNameController.text = widget.nokData!['NOKName'] ?? '';
@@ -198,49 +198,49 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
   String? _selectedPensionType;
   List<String> _pensionTypes = [];
 
-  Future<void> _fetchFromBasicTbl(String personalNo) async {
-    if (personalNo.isEmpty) return;
+  // Future<void> _fetchFromBasicTbl(String personalNo) async {
+  //   if (personalNo.isEmpty) return;
 
-    // 1️⃣ Fetch from BasicTbl
-    final record = await AdminDB.instance.getRecordByPersonalNo(personalNo);
+  //   // 1️⃣ Fetch from BasicTbl
+  //   final record = await AdminDB.instance.getRecordByPersonalNo(personalNo);
 
-    // 2️⃣ Fetch type of pension from LuPension
-    final pensions = await LuPensionDatabase.instance.getAllPensions();
-    // Optional: pick based on personalNo or just take the first for demo
-    String pensionTypeFromLu = pensions.isNotEmpty
-        ? pensions.first['Pension_Type']
-        : '';
+  //   // 2️⃣ Fetch type of pension from LuPension
+  //  // final pensions = await AdminDB.instance.getAllPensions();
+  //   // Optional: pick based on personalNo or just take the first for demo
+  //   String pensionTypeFromLu = pensions.isNotEmpty
+  //       ? pensions.first['Pension_Type']
+  //       : '';
 
-    if (!mounted) return;
+  //   if (!mounted) return;
 
-    if (record != null) {
-      setState(() {
-        _nokNameController.text = record['nok_name'] ?? '';
-        _nokRelationController.text = record['nok_relation'] ?? '';
-        _nokCnicController.text = record['nok_cnic'] ?? '';
-        _nokDoBirthController.text = record['nok_do_birth'] ?? '';
-        _nokIdMksController.text = record['nok_id_mks'] ?? '';
-        _nokPsbNoController.text = record['nok_psb_no'] ?? '';
-        _nokPpoNoController.text = record['nok_ppo_no'] ?? '';
-        _nokGpoController.text = record['nok_gpo'] ?? '';
-        _nokPdoController.text = record['nok_pdo'] ?? '';
-        _nokBankNameController.text = record['nok_bank_name'] ?? '';
-        _nokBankBranchController.text = record['nok_bank_branch'] ?? '';
-        _nokBankAcctNoController.text = record['nok_bank_acct_no'] ?? '';
-        _nokIbanNoController.text = record['nok_iban_no'] ?? '';
-        _nokNetPensionController.text =
-            record['nok_net_pension']?.toString() ?? '';
-        _nokDoDeathController.text = record['do_death'] ?? '';
-        // ✅ Instead of BasicTbl, set from LuPension
-        _nokTypeOfPensionController.text = pensionTypeFromLu;
-        _selectedPensionType = pensionTypeFromLu; // If using Dropdown
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No record found in BasicTbl")),
-      );
-    }
-  }
+  //   if (record != null) {
+  //     setState(() {
+  //       _nokNameController.text = record['nok_name'] ?? '';
+  //       _nokRelationController.text = record['nok_relation'] ?? '';
+  //       _nokCnicController.text = record['nok_cnic'] ?? '';
+  //       _nokDoBirthController.text = record['nok_do_birth'] ?? '';
+  //       _nokIdMksController.text = record['nok_id_mks'] ?? '';
+  //       _nokPsbNoController.text = record['nok_psb_no'] ?? '';
+  //       _nokPpoNoController.text = record['nok_ppo_no'] ?? '';
+  //       _nokGpoController.text = record['nok_gpo'] ?? '';
+  //       _nokPdoController.text = record['nok_pdo'] ?? '';
+  //       _nokBankNameController.text = record['nok_bank_name'] ?? '';
+  //       _nokBankBranchController.text = record['nok_bank_branch'] ?? '';
+  //       _nokBankAcctNoController.text = record['nok_bank_acct_no'] ?? '';
+  //       _nokIbanNoController.text = record['nok_iban_no'] ?? '';
+  //       _nokNetPensionController.text =
+  //           record['nok_net_pension']?.toString() ?? '';
+  //       _nokDoDeathController.text = record['do_death'] ?? '';
+  //       // ✅ Instead of BasicTbl, set from LuPension
+  //       _nokTypeOfPensionController.text = pensionTypeFromLu;
+  //       _selectedPensionType = pensionTypeFromLu; // If using Dropdown
+  //     });
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("No record found in BasicTbl")),
+  //     );
+  //   }
+  // }
 
   Future<void> _saveDataToDb() async {
     if (!_formKey.currentState!.validate()) return;
@@ -334,11 +334,11 @@ class _NokDataScreenState extends State<FamilytblDataScreen> {
                 spacing: 16,
                 runSpacing: 8,
                 children: [
-                  _buildTextField(
-                    "PersNo",
-                    _persNoController,
-                    onSubmitted: (value) => _fetchFromBasicTbl(value),
-                  ),
+                  // _buildTextField(
+                  //   "PersNo",
+                  //   _persNoController,
+                  //   onSubmitted: (value) => _fetchFromBasicTbl(value),
+                  // ),
                   _buildTextField("NOK Name", _nokNameController),
                   _buildTextField("NOK Relation", _nokRelationController),
                   SizedBox(

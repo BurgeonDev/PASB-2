@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/sqlite/lupension_database_Helper.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 class LuPensionScreen extends StatefulWidget {
   const LuPensionScreen({super.key});
@@ -39,7 +40,7 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
   }
 
   Future<void> _loadPensions() async {
-    final data = await LuPensionDatabase.instance.getAllPensions();
+    final data = await AdminDB.instance.fetchAll('Lu_Pension');
     setState(() {
       _pensionList = data;
     });
@@ -56,13 +57,15 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
     };
 
     if (_editingId == null) {
+      // Insert new record
       pensionData['created_at'] = now;
       pensionData['updated_at'] = now;
-      await LuPensionDatabase.instance.insertPension(pensionData);
+      await AdminDB.instance.insertRecord('Lu_Pension', pensionData);
     } else {
-      pensionData['id'] = _editingId!.toString();
+      // Update existing record
+      pensionData['id'] = _editingId!.toString(); // or int, both fine
       pensionData['updated_at'] = now;
-      await LuPensionDatabase.instance.updatePension(pensionData);
+      await AdminDB.instance.updateRecord('Lu_Pension', pensionData);
     }
 
     _clearForm();
@@ -80,7 +83,7 @@ class _LuPensionScreenState extends State<LuPensionScreen> {
   }
 
   Future<void> _deletePension(int id) async {
-    await LuPensionDatabase.instance.deletePension(id);
+    await AdminDB.instance.deleteRecord('Lu_Pension', id);
     _loadPensions();
   }
 

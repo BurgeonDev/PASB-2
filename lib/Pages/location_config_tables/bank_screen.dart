@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:testing_window_app/components/button_component.dart';
 import 'package:testing_window_app/components/delete_dialog.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 import 'package:testing_window_app/viewmodel/admin_db_for_tables/bank_db.dart';
 
 class BankScreen extends StatefulWidget {
@@ -35,7 +36,7 @@ class _BankScreenState extends State<BankScreen> {
   }
 
   Future<void> _loadBanks() async {
-    final data = await BankDB.instance.fetchBanks();
+    final data = await AdminDB.instance.fetchAll('lu_bank');
     setState(() => _bankList = data);
   }
 
@@ -58,9 +59,10 @@ class _BankScreenState extends State<BankScreen> {
     }
 
     if (_editingId == null) {
-      await BankDB.instance.insertBank(bankData);
+      await AdminDB.instance.insertRecord('lu_bank', bankData);
     } else {
-      await BankDB.instance.updateBank(_editingId!, {
+      await AdminDB.instance.updateRecord('lu_bank', {
+        'id': _editingId!,
         ...bankData,
         'updated_at': now,
       });
@@ -85,7 +87,7 @@ class _BankScreenState extends State<BankScreen> {
         title: 'Delete Bank',
         message: 'Are you sure you want to delete this bank?',
         onConfirm: () async {
-          await BankDB.instance.deleteBank(id);
+          await AdminDB.instance.deleteRecord('lu_bank', id);
           _loadBanks();
         },
       ),

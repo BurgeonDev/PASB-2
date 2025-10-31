@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:testing_window_app/components/button_component.dart';
+import 'package:testing_window_app/viewmodel/admin_db_for_tables/admin_db.dart';
 
 import '../../sqlite/pansion_claims_db.dart';
 
@@ -52,7 +53,7 @@ class _ViewAllPensionClaimScreensState
   }
 
   Future<void> _fetchClaims() async {
-    final data = await PensionClaimsDB.instance.getAllClaims();
+    final data = await AdminDB.instance.fetchAll('pension_claims');
     setState(() {
       _claims = data;
       _filteredClaims = data;

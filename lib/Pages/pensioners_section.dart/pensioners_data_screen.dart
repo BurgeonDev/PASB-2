@@ -108,12 +108,16 @@ class _PensionersDataState extends State<PensionersDataScreen> {
   final TextEditingController milQualController = TextEditingController();
 
   // Dropdown-selected values
+  int? selectedRankId;
   String? selectedPrefix;
-  String? selectedRank;
+  String? selectedForce;
+  int? selectedTypeOfPensionId;
+  String? selectedTypeOfPensionName;
+  int? selectedBankId;
   int? selectedRegtId;
   String? selectedMedCat;
   String? selectedCharacter;
-  String? selectedTypeOfPension;
+
   String? selectedNOKRelation;
   String? selectedUCName;
   String? selectedTehsil;
@@ -136,13 +140,11 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     "PTC",
     "NPO-",
   ];
-  final List<String> rankOptions = [
-    "Lieutenant",
-    "Captain",
-    "Major",
-    "Colonel",
-  ];
+
+  List<Map<String, dynamic>> rankList = [];
   List<Map<String, dynamic>> regtCorpsList = [];
+  List<Map<String, dynamic>> bankList = [];
+  List<Map<String, dynamic>> pensionTypes = [];
 
   Future<void> loadRegtCorps() async {
     try {
@@ -176,11 +178,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     "UnSatisfactory",
     "Very Good",
   ];
-  final List<String> pensionTypeOptions = [
-    "Service Pension",
-    "Disability Pension",
-    "Family Pension",
-  ];
+
   final List<String> nokRelationOptions = [
     "Son",
     "Widow",
@@ -275,11 +273,11 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     doVerificationController.clear();
 
     setState(() {
-      selectedRank = null;
+      selectedRankId = null;
       selectedRegtId = null;
       selectedMedCat = null;
       selectedCharacter = null;
-      selectedTypeOfPension = null;
+      selectedTypeOfPensionId = null;
       selectedNOKRelation = null;
       selectedUCName = null;
       selectedTehsil = null;
@@ -335,7 +333,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "date_entry": DateTime.now().toIso8601String(),
       "prefix": selectedPrefix,
       "personal_no": personalNoController.text,
-      "rank": selectedRank,
+      "rank": selectedRankId,
       "trade": tradeController.text,
       "name": nameController.text,
       "regt": selectedRegtId,
@@ -360,7 +358,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "nok_name": nokNameController.text,
       "nok_relation": selectedNOKRelation,
       "nok_cnic": nokCnicController.text,
-      "type_of_pension": selectedTypeOfPension,
+      "type_of_pension": selectedTypeOfPensionId,
       "do_death": doDeathController.text,
       "place_death": placeDeathController.text,
       "cause_death": causeDeathController.text,
@@ -443,7 +441,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "date_entry": DateTime.now().toIso8601String(),
       "prefix": selectedPrefix,
       "personal_no": personalNoController.text,
-      "rank": selectedRank,
+      "rank": selectedRankId,
       "trade": tradeController.text,
       "name": nameController.text,
       "regt": selectedRegtId,
@@ -468,7 +466,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "nok_name": nokNameController.text,
       "nok_relation": selectedNOKRelation,
       "nok_cnic": nokCnicController.text,
-      "type_of_pension": selectedTypeOfPension,
+      "type_of_pension": selectedTypeOfPensionId,
       "do_death": doDeathController.text,
       "place_death": placeDeathController.text,
       "cause_death": causeDeathController.text,
@@ -501,7 +499,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "Date_Entry": dateEntry,
       "Prefix": selectedPrefix,
       "Personal No": personalNoController.text,
-      "Rank": selectedRank,
+      "Rank": selectedRankId.toString(),
       "Trade": tradeController.text,
       "Name": nameController.text,
       "Regt/Corps": selectedRegtId.toString(),
@@ -526,7 +524,7 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       "NOK Name": nokNameController.text,
       "NOK Relation": selectedNOKRelation,
       "NOK CNIC": nokCnicController.text,
-      "Type of Pension": selectedTypeOfPension,
+      "Type of Pension": selectedTypeOfPensionId.toString(),
       "DO Death": doDeathController.text,
       "Place Death": placeDeathController.text,
       "Cause Death": causeDeathController.text,
@@ -590,10 +588,33 @@ class _PensionersDataState extends State<PensionersDataScreen> {
     );
   }
 
+  Future<void> _loadRanks() async {
+    final data = await AdminDB.instance.fetchAll('rank');
+    setState(() {
+      rankList = data;
+    });
+    print("✅ Rank data loaded: $rankList");
+  }
+
+  Future<void> _loadBanks() async {
+    final data = await AdminDB.instance.fetchAll('lu_bank');
+    setState(() {
+      bankList = data;
+    });
+  }
+
+  Future<void> loadPensionTypes() async {
+    pensionTypes = await AdminDB.instance.fetchAll('Lu_Pension');
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     loadRegtCorps();
+    _loadRanks();
+    _loadBanks();
+    loadPensionTypes();
     if (widget.pensionData != null) {
       final data = widget.pensionData!;
       selectedPrefix = data["prefix"] ?? '';
@@ -626,11 +647,11 @@ class _PensionersDataState extends State<PensionersDataScreen> {
       doVerificationController.text = data["do_verification"] ?? '';
 
       // Dropdown values
-      selectedRank = data["rank"];
+      selectedRankId = data["rank"];
       selectedRegtId = data["regt"];
       selectedMedCat = data["med_cat"];
       selectedCharacter = data["character"];
-      selectedTypeOfPension = data["type_of_pension"];
+      selectedTypeOfPensionId = data["type_of_pension"];
       selectedNOKRelation = data["nok_relation"];
       selectedUCName = data["uc_name"];
       selectedTehsil = data["tehsil"];
@@ -696,21 +717,78 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                             const SizedBox(height: 8),
                             SizedBox(
                               width: 340,
-                              child: _buildDropdown(
-                                borderColor: Colors.red,
-                                hintText: "Rank *",
-                                items: rankOptions,
-                                value: selectedRank,
+                              child: DropdownButtonFormField<String>(
+                                value:
+                                    selectedForce, // <-- define this variable in your State
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: "Select Force *",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: "Army",
+                                    child: Text("Army"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "PAF",
+                                    child: Text("PAF"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Navy",
+                                    child: Text("Navy"),
+                                  ),
+                                ],
                                 onChanged: (val) {
                                   setState(() {
-                                    selectedRank = val;
+                                    selectedForce = val!;
                                   });
                                 },
-                                validator: (v) => (v == null || v.isEmpty)
-                                    ? "Choose rank"
-                                    : null,
+                                validator: (v) =>
+                                    v == null ? "Please select force" : null,
                               ),
                             ),
+
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: 340,
+                              child: DropdownButtonFormField<int>(
+                                value: selectedRankId,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: "Select Rank *",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                items: rankList.map((rank) {
+                                  return DropdownMenuItem<int>(
+                                    value: rank['id'],
+                                    child: Text(rank['rank'] ?? 'Unknown'),
+                                  );
+                                }).toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    selectedRankId = val;
+                                  });
+                                },
+                                validator: (v) =>
+                                    v == null ? "Please select a rank" : null,
+                              ),
+                            ),
+
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "Trade",
@@ -1036,19 +1114,39 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                             const SizedBox(height: 8),
                             SizedBox(
                               width: 340,
-                              child: _buildDropdown(
-                                borderColor: Colors.red,
-                                hintText: "Type of Pension *",
-                                items: pensionTypeOptions,
-                                value: selectedTypeOfPension,
+                              child: DropdownButtonFormField<int>(
+                                value: selectedTypeOfPensionId,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: "Type of Pension *",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(color: Colors.red),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                items: pensionTypes.map((pension) {
+                                  return DropdownMenuItem<int>(
+                                    value: pension['id'], // primary key from DB
+                                    child: Text(pension['Pension_Type'] ?? ''),
+                                  );
+                                }).toList(),
                                 onChanged: (val) {
                                   setState(() {
-                                    selectedTypeOfPension = val;
+                                    selectedTypeOfPensionId = val; // store ID
+                                    // store name for display or later use
+                                    selectedTypeOfPensionName = pensionTypes
+                                        .firstWhere(
+                                          (p) => p['id'] == val,
+                                        )['Pension_Type'];
                                   });
                                 },
-                                validator: (v) => (v == null || v.isEmpty)
-                                    ? "Choose pension type"
-                                    : null,
+                                validator: (v) =>
+                                    (v == null) ? "Choose pension type" : null,
                               ),
                             ),
                           ],
@@ -1220,11 +1318,39 @@ class _PensionersDataState extends State<PensionersDataScreen> {
                               validator: (v) => null,
                             ),
                             const SizedBox(height: 8),
-                            Textfieldcomponent(
-                              hinttext: "Bank Name",
-                              controller: bankNameController,
-                              validator: (v) => null,
+                            SizedBox(
+                              width: 340,
+                              child: DropdownButtonFormField<int>(
+                                value: selectedBankId,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: "Select Bank *",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                items: bankList.map((bank) {
+                                  return DropdownMenuItem<int>(
+                                    value:
+                                        bank['id'], // store the bank's primary key
+                                    child: Text(bank['name']),
+                                  );
+                                }).toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    selectedBankId = val;
+                                  });
+                                },
+                                validator: (v) =>
+                                    v == null ? "Please select a bank" : null,
+                              ),
                             ),
+
                             const SizedBox(height: 8),
                             Textfieldcomponent(
                               hinttext: "Bank Branch",

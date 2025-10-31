@@ -377,43 +377,52 @@ class _UserCreateScreenState extends State<UserCreateScreen> {
                 ),
                 const SizedBox(height: 15),
 
-                _buildLabeledDropdown(
-                  label: "Rank *",
-                  value: selectedRank,
-                  items: ranks,
-                  hint: "Select Rank",
-                  onChanged: (v) => setState(() => selectedRank = v),
+                SizedBox(
+                  width: 340,
+                  child: _buildLabeledDropdown(
+                    label: "Rank *",
+                    value: selectedRank,
+                    items: ranks,
+                    hint: "Select Rank",
+                    onChanged: (v) => setState(() => selectedRank = v),
+                  ),
                 ),
                 const SizedBox(height: 15),
 
-                _buildLabeledDropdown(
-                  label: "Role *",
-                  value: selectedRole,
-                  items: roles,
-                  hint: "Select Role",
-                  onChanged: (v) => setState(() {
-                    selectedRole = v;
-                    selectedProvince = null;
-                    selectedDirectorate = null;
-                    selectedDasb = null;
-                    selectedDistrict = null;
-                  }),
+                SizedBox(
+                  width: 340,
+                  child: _buildLabeledDropdown(
+                    label: "Role *",
+                    value: selectedRole,
+                    items: roles,
+                    hint: "Select Role",
+                    onChanged: (v) => setState(() {
+                      selectedRole = v;
+                      selectedProvince = null;
+                      selectedDirectorate = null;
+                      selectedDasb = null;
+                      selectedDistrict = null;
+                    }),
+                  ),
                 ),
 
                 if (selectedRole != null &&
                     selectedRole != "Nation-wide User") ...[
                   const SizedBox(height: 15),
-                  _buildLabeledDropdown(
-                    label: "Province *",
-                    value: selectedProvince,
-                    items: provinceList,
-                    hint: "Select Province",
-                    onChanged: (v) => setState(() {
-                      selectedProvince = v;
-                      selectedDirectorate = null;
-                      selectedDasb = null;
-                      selectedDistrict = null;
-                    }),
+                  SizedBox(
+                    width: 340,
+                    child: _buildLabeledDropdown(
+                      label: "Province *",
+                      value: selectedProvince,
+                      items: provinceList,
+                      hint: "Select Province",
+                      onChanged: (v) => setState(() {
+                        selectedProvince = v;
+                        selectedDirectorate = null;
+                        selectedDasb = null;
+                        selectedDistrict = null;
+                      }),
+                    ),
                   ),
                 ],
 
@@ -423,16 +432,19 @@ class _UserCreateScreenState extends State<UserCreateScreen> {
                   if (selectedRole == "Directorate User" ||
                       selectedRole == "DASB User" ||
                       selectedRole == "District User")
-                    _buildLabeledDropdown(
-                      label: "Directorate *",
-                      value: selectedDirectorate,
-                      items: directorateList,
-                      hint: "Select Directorate",
-                      onChanged: (v) => setState(() {
-                        selectedDirectorate = v;
-                        selectedDasb = null;
-                        selectedDistrict = null;
-                      }),
+                    SizedBox(
+                      width: 340,
+                      child: _buildLabeledDropdown(
+                        label: "Directorate *",
+                        value: selectedDirectorate,
+                        items: directorateList,
+                        hint: "Select Directorate",
+                        onChanged: (v) => setState(() {
+                          selectedDirectorate = v;
+                          selectedDasb = null;
+                          selectedDistrict = null;
+                        }),
+                      ),
                     ),
                 ],
 
@@ -440,15 +452,18 @@ class _UserCreateScreenState extends State<UserCreateScreen> {
                     (selectedRole == "DASB User" ||
                         selectedRole == "District User")) ...[
                   const SizedBox(height: 15),
-                  _buildLabeledDropdown(
-                    label: "DASB *",
-                    value: selectedDasb,
-                    items: dasbList,
-                    hint: "Select DASB",
-                    onChanged: (v) => setState(() {
-                      selectedDasb = v;
-                      selectedDistrict = null;
-                    }),
+                  SizedBox(
+                    width: 340,
+                    child: _buildLabeledDropdown(
+                      label: "DASB *",
+                      value: selectedDasb,
+                      items: dasbList,
+                      hint: "Select DASB",
+                      onChanged: (v) => setState(() {
+                        selectedDasb = v;
+                        selectedDistrict = null;
+                      }),
+                    ),
                   ),
                 ],
 
